@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace D_Accounting
+namespace D_AccountingCore
 {
     public class GrayUnaccessibleCase : AbstractCase
     {

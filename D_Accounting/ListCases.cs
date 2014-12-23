@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using D_AccountingCore;
+
 namespace D_Accounting
 {
     public class ListCases : ObservableCollection<AbstractCase>

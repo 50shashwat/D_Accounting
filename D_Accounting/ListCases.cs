@@ -30,6 +30,9 @@ namespace D_Accounting
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
         }
 
+        /// <summary>
+        /// The number of rows contained by the data table
+        /// </summary>
         public int RowCount
         {
             get
@@ -47,6 +50,9 @@ namespace D_Accounting
             }
         }
 
+        /// <summary>
+        /// The number of columns contained by the data table
+        /// </summary>
         public int ColumnCount
         {
             get
@@ -63,6 +69,13 @@ namespace D_Accounting
             }
         }
         
+        /// <summary>
+        /// Override of the InsertItem
+        ///     - every add or insert goes by this method
+        ///     - insert so that the list is sorted by rows and columns
+        /// </summary>
+        /// <param name="index">Index where to add : modified to add it to the right position</param>
+        /// <param name="item">Item to insert</param>
         protected override void InsertItem(int index, AbstractCase item)
         {
             for (int i = 0; i < Count; ++i)

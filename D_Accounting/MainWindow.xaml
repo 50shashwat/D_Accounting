@@ -36,7 +36,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <WrapPanel Grid.Row="0">
-                <Button Style="{StaticResource Default_Button_Style}">
+                <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=AddAccountCommand}">
                     <TextBlock Text="Add account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
                 <Button Style="{StaticResource Default_Button_Style}">

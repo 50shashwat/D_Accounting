@@ -50,6 +50,7 @@ namespace D_Accounting
         {
             get
             {
+                // TODO : maybe the save command could have an CanExecute attribute : so if saved and no new changes done => inactive button
                 return mSaveCommand ?? (mSaveCommand = new CommandHandler(Save));
             }
         }
@@ -59,5 +60,21 @@ namespace D_Accounting
         {
             Console.Beep();
         }
+
+        public ICommand AddAccountCommand
+        {
+            get
+            {
+                return mAddAccountCommand ?? (mAddAccountCommand = new CommandHandler(AddAccount));
+            }
+        }
+        private ICommand mAddAccountCommand;
+
+        private void AddAccount()
+        {
+            // TODO : add account (open window + ask account name + create column)
+        }
+
+
     }
 }

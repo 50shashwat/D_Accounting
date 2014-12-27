@@ -9,6 +9,9 @@ using D_AccountingCore;
 
 namespace D_Accounting
 {
+    /// <summary>
+    /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading)
+    /// </summary>
     public class ListCases : ObservableCollection<AbstractCase>
     {
         public ListCases()

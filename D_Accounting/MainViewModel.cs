@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using System.Windows.Input;
 
 namespace D_Accounting
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         public Action CloseAction
         {
@@ -21,6 +22,46 @@ namespace D_Accounting
             private set;
         }
 
+        public String WrittenAccount
+        {
+            get
+            {
+                return mWrittenAccount;
+            }
+            set
+            {
+                mWrittenAccount = value;
+                OnPropertyChanged("WrittenAccount");
+
+                if (mWrittenAccount == null || mWrittenAccount.Trim().Equals(""))
+                {
+                    CanExecuteAddAccount = false;
+                    CanExecuteRemoveAccount = false;
+                }
+                else
+                {
+                    if (Cases.AccountNames.Contains(mWrittenAccount))
+                    {
+                        CanExecuteAddAccount = false;
+                        CanExecuteRemoveAccount = true;
+                    }
+                    else if (Cases.ColumnTitles.Contains(mWrittenAccount))
+                    {
+                        CanExecuteAddAccount = false;
+                        CanExecuteRemoveAccount = false;
+                    }
+                    else
+                    {
+                        CanExecuteAddAccount = true;
+                        CanExecuteRemoveAccount = false;
+                    }
+                }
+                OnPropertyChanged("AddAccountCommand");
+                OnPropertyChanged("RemoveAccountCommand");
+            }
+        }
+        private String mWrittenAccount;
+
         /// <summary>
         /// Default constructor of the main VM
         /// </summary>
@@ -30,7 +71,9 @@ namespace D_Accounting
         }
 
         // ***** Commands ***** //
-
+        // TODO : undo/redo : save command : design pattern command
+        #region Commands
+        #region Close command
         public ICommand CloseCommand
         {
             get
@@ -45,7 +88,9 @@ namespace D_Accounting
             // Ask if save...
             CloseAction();
         }
+        #endregion // Close command
 
+        #region Save command
         public ICommand SaveCommand
         {
             get
@@ -60,21 +105,57 @@ namespace D_Accounting
         {
             Console.Beep();
         }
+        #endregion // Save command
 
+        #region Add account command
         public ICommand AddAccountCommand
         {
             get
             {
-                return mAddAccountCommand ?? (mAddAccountCommand = new CommandHandler(AddAccount));
+                return new CommandHandler(AddAccount, CanExecuteAddAccount);
             }
         }
-        private ICommand mAddAccountCommand;
+
+        private bool CanExecuteAddAccount { get; set; }
 
         private void AddAccount()
         {
-            // TODO : add account (open window + ask account name + create column)
+            Cases.AddAccount(mWrittenAccount);
+            WrittenAccount = "";
+            // TODO : the view has to update the grid row and column definition
+        }
+        #endregion // Add account command
+
+        #region Remove account command
+        public ICommand RemoveAccountCommand
+        {
+            get
+            {
+                return new CommandHandler(RemoveAccount, CanExecuteRemoveAccount);
+            }
         }
 
+        private bool CanExecuteRemoveAccount { get; set; }
 
+        private void RemoveAccount()
+        {
+            Cases.RemoveAccount(mWrittenAccount);
+            WrittenAccount = "";
+        }
+
+        #endregion // Remove account command
+
+        // TODO : save command
+
+        #endregion // Commands
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

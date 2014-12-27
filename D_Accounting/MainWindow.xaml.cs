@@ -37,6 +37,9 @@ namespace D_Accounting
             Grid grid = sender as Grid;
             ListCases list = (Resources["mMainViewModel"] as MainViewModel).Cases;
 
+            if (grid == null || list == null)
+                return;
+
             grid.RowDefinitions.Clear();
             grid.ColumnDefinitions.Clear();
            
@@ -59,6 +62,8 @@ namespace D_Accounting
 
                 grid.ColumnDefinitions.Add(colDef);
             }
+
+            UpdateLayout();
         }
     }
 }

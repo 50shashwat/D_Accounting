@@ -18,6 +18,11 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="6, 3"/>
         </Style>
+        <Style TargetType="TextBox" x:Key="Default_TextBox_Style">
+            <Setter Property="FontFamily" Value="Californian FB"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
         <Style TargetType="{x:Type Button}" x:Key="Default_Button_Style">
             <Setter Property="Margin" Value="5"/>
         </Style>
@@ -37,12 +42,21 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <WrapPanel Grid.Row="0">
-                <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=AddAccountCommand}">
+                <Button Style="{StaticResource Default_Button_Style}"
+                        Command="{Binding Source={StaticResource mMainViewModel}, Path=AddAccountCommand}">
                     <TextBlock Text="Add account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
-                <Button Style="{StaticResource Default_Button_Style}">
+                <Button Style="{StaticResource Default_Button_Style}"
+                        Command="{Binding Source={StaticResource mMainViewModel}, Path=RemoveAccountCommand}">
                     <TextBlock Text="Remove account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
+                <TextBlock Text="Account :" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
+                <TextBox Height="27" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center"
+                         Style="{StaticResource Default_TextBox_Style}"
+                         Text="{Binding Source={StaticResource mMainViewModel},
+                                        Path=WrittenAccount,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
             </WrapPanel>
             <WrapPanel Grid.Row="1">
                 <Button Style="{StaticResource Default_Button_Style}">

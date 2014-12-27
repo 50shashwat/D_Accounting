@@ -60,15 +60,41 @@ namespace D_Accounting
                 int nbColumn = 0;
                 List<int> countedColumns = new List<int>();
                 foreach (AbstractCase c in this)
+                {
                     if (!countedColumns.Contains(c.Column))
                     {
                         ++nbColumn;
                         countedColumns.Add(c.Column);
                     }
+                }
                 return nbColumn;
             }
         }
         
+        /// <summary>
+        /// Get the names on the accounts
+        /// </summary>
+        public IEnumerable<string> AccountNames
+        {
+            get
+            {
+                return  this.Where(c => c.Row == 0 && c.Column >= 1 && c.Column < ColumnCount - 2)
+                            .Select(c => (c as FixDescriptionCase).Name);
+            }
+        }
+
+        /// <summary>
+        /// Get the names of the column titles (cases on the first row)
+        /// </summary>
+        public IEnumerable<string> ColumnTitles
+        {
+            get
+            {
+                return  this.Where(c => c.Row == 0)
+                            .Select(c => (c as FixDescriptionCase).Name);
+            }
+        }
+
         /// <summary>
         /// Override of the InsertItem
         ///     - every add or insert goes by this method
@@ -92,6 +118,64 @@ namespace D_Accounting
             }  
 
             base.InsertItem(index, item);
+        }
+
+        /// <summary>
+        /// Add an account
+        /// </summary>
+        /// <param name="newAccountName">The name of the new account</param>
+        public void AddAccount(string newAccountName)
+        {
+            int oldColCount = ColumnCount;
+            int addedColumnIndex = oldColCount - 2;
+
+            // Move to the right
+            foreach (AbstractCase c in this.Where(c => c.Column >= oldColCount - 2))
+                c.Column++;
+
+            // Title case
+            Add(new FixDescriptionCase() { Row = 0, Column = addedColumnIndex, Name = newAccountName });
+
+            // Initial amount case
+            Add(new GrayUnaccessibleCase() { Row = 1, Column = addedColumnIndex });
+
+            // Full & empty oprations
+            for (int i = 2; i < RowCount - 2; ++i)
+                Add(new GrayUnaccessibleCase() { Row = i, Column = addedColumnIndex });
+
+            // Real & theoretical amount
+            Add(new GrayUnaccessibleCase() { Row = RowCount - 2, Column = addedColumnIndex });
+            Add(new GrayUnaccessibleCase() { Row = RowCount - 1, Column = addedColumnIndex });
+        }
+
+        /// <summary>
+        /// Removes an account
+        /// </summary>
+        /// <param name="accountName">Name of the account that will be removed</param>
+        public void RemoveAccount(string accountName)
+        {
+            // Find the column index
+            int colIndex = -1;
+            for (int col = 1; col < ColumnCount - 2; ++col)
+            {
+                if ((this[col] as FixDescriptionCase).Name.Equals(accountName))
+                {
+                    colIndex = col;
+                    break;
+                }
+            }
+
+            if (colIndex == -1) // Column not found
+                return;
+
+            // Remove the whole column (cases at all rows)
+            IEnumerable<AbstractCase> cases = this.Where(c => c.Column == colIndex);
+            for (int i = 0; i < cases.Count(); ++i)
+                this.Remove(cases.ElementAt(i));
+
+            // Move all column one to the left
+            foreach (AbstractCase c in this.Where(c => c.Column > colIndex))
+                c.Column--;
         }
     }
 }

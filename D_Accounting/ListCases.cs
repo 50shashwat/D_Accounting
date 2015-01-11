@@ -147,8 +147,8 @@ namespace D_Accounting
                 Add(new GrayUnaccessibleCase() { Row = i, Column = addedColumnIndex });
 
             // Real & theoretical amount
-            Add(new GrayUnaccessibleCase() { Row = RowCount - 2, Column = addedColumnIndex });
-            Add(new GrayUnaccessibleCase() { Row = RowCount - 1, Column = addedColumnIndex });
+            Add(new ReadonlyAmountCase() { Row = RowCount - 2, Column = addedColumnIndex, Amount = 0.0M });
+            Add(new ReadonlyAmountCase() { Row = RowCount - 1, Column = addedColumnIndex, Amount = 0.0M });
         }
 
         /// <summary>

@@ -118,6 +118,9 @@
                                     <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
                                 </WrapPanel>
                             </DataTemplate>
+                            <DataTemplate DataType="{x:Type model:ReadonlyAmountCase}">
+                                <TextBlock Text="{Binding Path=Amount, StringFormat={}{0} €}"  Style="{StaticResource Default_TextBlock_Style}"/>
+                            </DataTemplate>
                         </Border.Resources>
                         <ContentPresenter Content="{Binding}"/>
                     </Border>

@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractCase.cs" />
+    <Compile Include="AmountCase.cs" />
     <Compile Include="FixDescriptionCase.cs" />
     <Compile Include="GrayUnaccessibleCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

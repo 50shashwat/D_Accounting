@@ -99,7 +99,7 @@ namespace D_Accounting
         }
 
         /// <summary>
-        /// Override of the InsertItem
+        /// Override of the InsertItem method of ObservableCollection
         ///     - every add or insert goes by this method
         ///     - insert so that the list is sorted by rows and columns
         /// </summary>
@@ -140,7 +140,7 @@ namespace D_Accounting
             Add(new FixDescriptionCase() { Row = 0, Column = addedColumnIndex, Name = newAccountName });
 
             // Initial amount case
-            Add(new GrayUnaccessibleCase() { Row = 1, Column = addedColumnIndex });
+            Add(new AmountCase() { Row = 1, Column = addedColumnIndex, Amount = 0.0M});
 
             // Full & empty oprations
             for (int i = 2; i < RowCount - 2; ++i)

@@ -8,6 +8,5 @@ namespace D_AccountingCore
 {
     public class GrayUnaccessibleCase : AbstractCase
     {
-
     }
 }

@@ -11,15 +11,31 @@ namespace D_AccountingCore
     {
         public int Row
         {
-            get;
-            set;
+            get
+            {
+                return mRow;
+            }
+            set
+            {
+                mRow = value;
+                OnPropertyChanged("Row");
+            }
         }
+        private int mRow;
 
         public int Column
         {
-            get;
-            set;
+            get
+            {
+                return mColumn;
+            }
+            set
+            {
+                mColumn = value;
+                OnPropertyChanged("Column");
+            }
         }
+        private int mColumn;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(String propertyName)

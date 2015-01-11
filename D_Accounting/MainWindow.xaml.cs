@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +21,14 @@ namespace D_Accounting
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Grid MainDataGrid { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
 
             (Resources["mMainViewModel"] as MainViewModel).CloseAction = this.Close;
+            ((INotifyCollectionChanged)mItemsControl.Items).CollectionChanged += Event_ItemControl_CollectionChanged;
         }
 
         /// <summary>
@@ -35,6 +39,19 @@ namespace D_Accounting
         private void Event_LoadMainDataGrid_CreateRowsColumns(object sender, RoutedEventArgs e)
         {
             Grid grid = sender as Grid;
+            MainDataGrid = grid;
+
+            //UpdateMainDataGridLayout();
+        }
+
+        private void Event_ItemControl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateMainDataGridLayout();
+        }
+
+        private void UpdateMainDataGridLayout()
+        {
+            Grid grid = MainDataGrid;
             ListCases list = (Resources["mMainViewModel"] as MainViewModel).Cases;
 
             if (grid == null || list == null)
@@ -42,7 +59,7 @@ namespace D_Accounting
 
             grid.RowDefinitions.Clear();
             grid.ColumnDefinitions.Clear();
-           
+
             int rowNumber = list.RowCount;
             int columnNumber = list.ColumnCount;
 

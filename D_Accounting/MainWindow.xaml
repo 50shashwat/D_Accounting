@@ -70,7 +70,7 @@
         <!-- Main Grid : containing the data-->
         <ItemsControl Grid.Row="1"
                       Margin="3"
-                      ItemsSource="{Binding Source={StaticResource CasesView}}">
+                      ItemsSource="{Binding Source={StaticResource CasesView}}" Name="mItemsControl">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid Loaded="Event_LoadMainDataGrid_CreateRowsColumns">

@@ -172,9 +172,9 @@ namespace D_Accounting
                 return;
 
             // Remove the whole column (cases at all rows)
-            IEnumerable<AbstractCase> cases = this.Where(c => c.Column == colIndex);
-            for (int i = 0; i < cases.Count(); ++i)
-                this.Remove(cases.ElementAt(i));
+            var cases = this.Where(c => c.Column == colIndex);
+            for (int i = 0; cases.Count() != 0 ; ++i)
+                this.Remove(cases.ElementAt(0));
 
             // Move all column one to the left
             foreach (AbstractCase c in this.Where(c => c.Column > colIndex))

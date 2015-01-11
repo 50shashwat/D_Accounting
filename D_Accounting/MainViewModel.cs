@@ -122,7 +122,6 @@ namespace D_Accounting
         {
             Cases.AddAccount(mWrittenAccount);
             WrittenAccount = "";
-            // TODO : the view has to update the grid row and column definition
         }
         #endregion // Add account command
 

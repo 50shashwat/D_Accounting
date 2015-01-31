@@ -6,7 +6,20 @@ using System.Threading.Tasks;
 
 namespace D_AccountingCore
 {
-    public class ReadonlyAmountCase : AmountCase
+    public class ReadonlyAmountCase : AbstractCase
     {
+        public decimal Amount
+        {
+            get
+            {
+                return mAmount;
+            }
+            set
+            {
+                mAmount = value;
+                OnPropertyChanged("Amount");
+            }
+        }
+        private decimal mAmount;
     }
 }

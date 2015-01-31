@@ -149,7 +149,6 @@ namespace D_Accounting
         #endregion // Commands
 
 
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(String propertyName)
         {

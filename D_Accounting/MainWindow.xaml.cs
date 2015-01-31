@@ -27,12 +27,15 @@ namespace D_Accounting
         {
             InitializeComponent();
 
+            // References the close method of the View for the ViewModel
             (Resources["mMainViewModel"] as MainViewModel).CloseAction = this.Close;
+            // Updates the View when an item changed
             ((INotifyCollectionChanged)mItemsControl.Items).CollectionChanged += Event_ItemControl_CollectionChanged;
         }
 
         /// <summary>
         /// Loaded event on Grid : add row and column definitions
+        /// And defines the MainDataGrid
         /// </summary>
         /// <param name="sender">Grid</param>
         /// <param name="e"></param>
@@ -41,7 +44,7 @@ namespace D_Accounting
             Grid grid = sender as Grid;
             MainDataGrid = grid;
 
-            //UpdateMainDataGridLayout();
+            UpdateMainDataGridLayout();
         }
 
         private void Event_ItemControl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

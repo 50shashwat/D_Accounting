@@ -114,7 +114,7 @@
                             <!-- Amount case -->
                             <DataTemplate DataType="{x:Type model:AmountCase}">
                                 <WrapPanel>
-                                    <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Style="{StaticResource Grid_TextBox_Style}"/>
+                                    <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Grid_TextBox_Style}"/>
                                     <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
                                 </WrapPanel>
                             </DataTemplate>

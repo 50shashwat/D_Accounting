@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using D_AccountingCore;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace D_Accounting
 {
@@ -32,7 +34,7 @@ namespace D_Accounting
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 1 });
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
         }
-
+    
         /// <summary>
         /// The number of rows contained by the data table
         /// </summary>
@@ -179,6 +181,46 @@ namespace D_Accounting
             // Move all column one to the left
             foreach (AbstractCase c in this.Where(c => c.Column > colIndex))
                 c.Column--;
+        }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnCollectionChanged(e);
+
+            // If an item changes : call CaseChanged
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (AbstractCase item in e.NewItems)
+                    if (item is AmountCase)
+                        item.PropertyChanged += CaseChanged;
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (AbstractCase item in e.OldItems)
+                    if (item is AmountCase)
+                        item.PropertyChanged -= CaseChanged;
+            }
+        }
+
+        private void CaseChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // ERROR
+ 	        AmountCase c = sender as AmountCase;
+
+            if (c == null)
+                return;
+
+            // Adding up the whole column
+            int rowC = RowCount - 2;
+            decimal sum = 0.0M;
+            for (int i = 1; i < rowC; ++i)
+            {
+                sum += c.Amount;
+            }
+
+            // So I can update real amount & theoretical amount
+            foreach (ReadonlyAmountCase rdOnly in this.Where(sums => sums.Column == c.Column && sums.Row >= RowCount - 2))
+                rdOnly.Amount = sum;
         }
     }
 }

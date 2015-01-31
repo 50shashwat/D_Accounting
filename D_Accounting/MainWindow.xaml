@@ -18,6 +18,13 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="6, 3"/>
         </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource Default_TextBlock_Style}" x:Key="Amount_TextBlock_Style">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsNegative}" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="TextBox" x:Key="Default_TextBox_Style">
             <Setter Property="FontFamily" Value="Californian FB"/>
             <Setter Property="FontSize" Value="14"/>
@@ -26,6 +33,13 @@
         <Style TargetType="TextBox" BasedOn="{StaticResource Default_TextBox_Style}" x:Key="Grid_TextBox_Style">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="1"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource Grid_TextBox_Style}" x:Key="Amount_TextBox_Style">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsNegative}" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="Button" x:Key="Default_Button_Style">
             <Setter Property="Margin" Value="5"/>
@@ -119,7 +133,10 @@
                                 </WrapPanel>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type model:ReadonlyAmountCase}">
-                                <TextBlock Text="{Binding Path=Amount, StringFormat={}{0} €}"  Style="{StaticResource Default_TextBlock_Style}"/>
+                                <WrapPanel>                            
+                                    <TextBlock Text="{Binding Path=Amount}"  Style="{StaticResource Amount_TextBlock_Style}"/>
+                                    <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
+                                </WrapPanel>
                             </DataTemplate>
                         </Border.Resources>
                         <ContentPresenter Content="{Binding}"/>

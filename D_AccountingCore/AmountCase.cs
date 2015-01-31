@@ -18,8 +18,17 @@ namespace D_AccountingCore
             {
                 mAmount = value;
                 OnPropertyChanged("Amount");
+                OnPropertyChanged("IsNegative");
             }
         }
         private decimal mAmount;
+
+        public bool IsNegative
+        {
+            get
+            {
+                return mAmount < 0;
+            }
+        }
     }
 }

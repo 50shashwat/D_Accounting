@@ -187,6 +187,12 @@ namespace D_Accounting
             OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
         }
 
+        public void AddOperation(string selectedAccount)
+        {
+            // TODO
+            throw new NotImplementedException();
+        }
+
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnCollectionChanged(e);

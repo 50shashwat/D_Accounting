@@ -62,6 +62,22 @@ namespace D_Accounting
         }
         private String mWrittenAccount;
 
+        public String SelectedAccount
+        {
+            set
+            {
+                mSelectedAccount = value;
+                OnPropertyChanged("SelectedAccount");
+
+                if (mSelectedAccount == null || !Cases.AccountNames.Contains(mSelectedAccount))
+                    CanExecuteAddOperation = false;
+                else
+                    CanExecuteAddOperation = true;
+                OnPropertyChanged("AddOperationCommand");
+            }
+        }
+        private string mSelectedAccount;
+
         /// <summary>
         /// Default constructor of the main VM
         /// </summary>
@@ -143,6 +159,23 @@ namespace D_Accounting
         }
 
         #endregion // Remove account command
+
+        #region Add operation command
+        public ICommand AddOperationCommand
+        {
+            get
+            {
+                return new CommandHandler(AddOperation, CanExecuteAddOperation);
+            }
+        }
+
+        private bool CanExecuteAddOperation { get; set; }
+
+        private void AddOperation()
+        {
+            Cases.AddOperation(mSelectedAccount);
+        }
+        #endregion
 
         // TODO : save command
 

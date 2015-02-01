@@ -41,6 +41,10 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="ComboBox" x:Key="Default_ComboBox_Style">
+            <Setter Property="Margin" Value="5, 2"/>
+            <Setter Property="Width" Value="150"/>
+        </Style>
         <Style TargetType="Button" x:Key="Default_Button_Style">
             <Setter Property="Margin" Value="5"/>
         </Style>
@@ -81,7 +85,14 @@
                     <TextBlock Text="Add" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
                 <TextBlock Text="operation to" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
-                <ComboBox/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource mMainViewModel}, Path=Cases.AccountNames}"
+                          Style="{StaticResource Default_ComboBox_Style}">
+                    <ComboBox.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource Default_TextBlock_Style}"/>
+                        </ItemContainerTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </WrapPanel>
         </Grid>
         

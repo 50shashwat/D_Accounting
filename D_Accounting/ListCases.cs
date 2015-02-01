@@ -151,6 +151,8 @@ namespace D_Accounting
             // Real & theoretical amount
             Add(new ReadonlyAmountCase() { Row = RowCount - 2, Column = addedColumnIndex, Amount = 0.0M });
             Add(new ReadonlyAmountCase() { Row = RowCount - 1, Column = addedColumnIndex, Amount = 0.0M });
+
+            OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
         }
 
         /// <summary>
@@ -181,6 +183,8 @@ namespace D_Accounting
             // Move all column one to the left
             foreach (AbstractCase c in this.Where(c => c.Column > colIndex))
                 c.Column--;
+
+            OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -204,7 +208,6 @@ namespace D_Accounting
 
         private void CaseChanged(object sender, PropertyChangedEventArgs e)
         {
-            // ERROR
  	        AmountCase c = sender as AmountCase;
 
             if (c == null)

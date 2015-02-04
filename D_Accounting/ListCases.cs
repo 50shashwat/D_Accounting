@@ -12,10 +12,12 @@ using System.Collections.Specialized;
 namespace D_Accounting
 {
     /// <summary>
-    /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading)
+    /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading a book)
     /// </summary>
     public class ListCases : ObservableCollection<AbstractCase>
     {
+        private bool AddingColumn = false;
+
         public ListCases()
         {
             Add(new FixDescriptionCase() { Row = 0, Column = 0, Name = "Account name" });
@@ -131,6 +133,8 @@ namespace D_Accounting
         /// <param name="newAccountName">The name of the new account</param>
         public void AddAccount(string newAccountName)
         {
+            AddingColumn = true;
+
             int oldColCount = ColumnCount;
             int addedColumnIndex = oldColCount - 2;
 
@@ -153,6 +157,8 @@ namespace D_Accounting
             Add(new ReadonlyAmountCase() { Row = RowCount - 1, Column = addedColumnIndex, Amount = 0.0M });
 
             OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
+
+            AddingColumn = false;
         }
 
         /// <summary>
@@ -189,8 +195,30 @@ namespace D_Accounting
 
         public void AddOperation(string selectedAccount)
         {
-            // TODO
-            throw new NotImplementedException();
+            int addedRowIndex = RowCount - 2;
+            int accountCol = 0;
+            while (!AccountNames.ElementAt(accountCol++).Equals(selectedAccount)) ; // Take the index of the AccountName + 1 (because the accounts begin on the second column)
+
+            // Move the two last rows down
+            foreach (AbstractCase c in this.Where(c => c.Row >= addedRowIndex))
+                c.Row++;
+
+            // Add date case
+            Add(new DateCase() { Row = addedRowIndex, Column = 0, Date = DateTime.Now });
+
+            // Add amount case
+            Add(new AmountCase() { Row = addedRowIndex, Column = accountCol, Amount = 0.0M });
+
+            // Add Gray cases (for not selected accounts)
+            for (int col = 1; col < ColumnCount - 2; ++col)
+                if (col != accountCol)
+                    Add(new GrayUnaccessibleCase() { Row = addedRowIndex, Column = col });
+
+            // Add Okay case
+            Add(new OkayCase() { Row = addedRowIndex, Column = ColumnCount - 2, IsOkay = false });
+
+            // Add description case
+            Add(new DescriptionCase() { Row = addedRowIndex, Column = ColumnCount - 1, Description = ""});
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -201,35 +229,99 @@ namespace D_Accounting
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (AbstractCase item in e.NewItems)
-                    if (item is AmountCase)
+                    if (item is AmountCase || item is OkayCase)
                         item.PropertyChanged += CaseChanged;
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (AbstractCase item in e.OldItems)
-                    if (item is AmountCase)
+                    if (item is AmountCase || item is OkayCase)
                         item.PropertyChanged -= CaseChanged;
             }
         }
 
         private void CaseChanged(object sender, PropertyChangedEventArgs e)
         {
- 	        AmountCase c = sender as AmountCase;
-
-            if (c == null)
+            if (AddingColumn)
                 return;
 
-            // Adding up the whole column
-            int rowC = RowCount - 2;
-            decimal sum = 0.0M;
-            for (int i = 1; i < rowC; ++i)
+ 	        AmountCase c = sender as AmountCase;
+            OkayCase c1 = sender as OkayCase;
+
+            int col = -1;
+
+            if (c == null)
             {
-                sum += c.Amount;
+                if (c1 == null) // If the case isn't an OkayCase or AmountCase
+                    return;
+                else // It's an okay case
+                {
+                    int colC = ColumnCount - 2;
+                    for (int i = 1; i < colC; ++i) // Find the AmountCase in the row (the rest is GrayUnaccessible)
+                    {
+                        if (this[GetCaseIndex(i, c1.Row)] is AmountCase)
+                        {
+                            col = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            else // If it's an amount case, we have the column
+                col = c.Column;
+
+            if (col != -1)
+                UpdateAmounts(col);
+        }
+
+        /// <summary>
+        /// Calculates the index of an item in the collection by knowing its column and row
+        /// </summary>
+        /// <param name="col">The column of the searched case</param>
+        /// <param name="row">The row of the searched case</param>
+        /// <returns>The index in th    e collection of the searched case</returns>
+        private int GetCaseIndex(int col, int row)
+        {
+            return col + row * ColumnCount;
+        }
+
+        /// <summary>
+        /// Updates the real and theoretical amount of a column
+        /// </summary>
+        /// <param name="col">The updated column</param>
+        private void UpdateAmounts(int col)
+        {
+            // It's not an account column
+            if (col == 0 || col >= ColumnCount - 2)
+                return;
+
+
+            int colC = ColumnCount;
+            int colC2 = colC - 2;
+            int rowC = RowCount;
+
+            // Both amounts begin with the initial amount
+            decimal initialAmount = (this[GetCaseIndex(col, 1)] as AmountCase).Amount;
+            decimal sumReal = initialAmount;
+            decimal sumTheo = initialAmount;
+            // For every operation row
+            for (int i = 2; i < rowC - 2; ++i)
+            {
+                AbstractCase c = this[GetCaseIndex(col, i)];
+
+                if (!(c is AmountCase))
+                    continue;
+
+                decimal caseAmount = (c as AmountCase).Amount;
+
+                sumTheo += caseAmount;
+                if ((this[GetCaseIndex(colC2, i)] as OkayCase).IsOkay)
+                    sumReal += caseAmount;
             }
 
-            // So I can update real amount & theoretical amount
-            foreach (ReadonlyAmountCase rdOnly in this.Where(sums => sums.Column == c.Column && sums.Row >= RowCount - 2))
-                rdOnly.Amount = sum;
+            // Update real amount & theoretical amount
+            (this[GetCaseIndex(col, rowC - 2)] as ReadonlyAmountCase).Amount = sumReal;
+            (this[GetCaseIndex(col, rowC - 1)] as ReadonlyAmountCase).Amount = sumTheo;
         }
     }
 }

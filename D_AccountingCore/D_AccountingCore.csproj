@@ -41,8 +41,11 @@
   <ItemGroup>
     <Compile Include="AbstractCase.cs" />
     <Compile Include="AmountCase.cs" />
+    <Compile Include="DateCase.cs" />
+    <Compile Include="DescriptionCase.cs" />
     <Compile Include="FixDescriptionCase.cs" />
     <Compile Include="GrayUnaccessibleCase.cs" />
+    <Compile Include="OkayCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadonlyAmountCase.cs" />
   </ItemGroup>

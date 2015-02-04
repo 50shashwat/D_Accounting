@@ -140,15 +140,32 @@
                             <!-- Amount case -->
                             <DataTemplate DataType="{x:Type model:AmountCase}">
                                 <WrapPanel>
-                                    <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Grid_TextBox_Style}"/>
+                                    <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Amount_TextBox_Style}"/>
                                     <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
                                 </WrapPanel>
                             </DataTemplate>
+                            <!-- Readonly Amount case -->
                             <DataTemplate DataType="{x:Type model:ReadonlyAmountCase}">
                                 <WrapPanel>                            
-                                    <TextBlock Text="{Binding Path=Amount}"  Style="{StaticResource Amount_TextBlock_Style}"/>
+                                    <TextBlock Text="{Binding Path=Amount, Mode=OneWay}"  Style="{StaticResource Amount_TextBlock_Style}"/>
                                     <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
                                 </WrapPanel>
+                            </DataTemplate>
+                            <!-- Date case -->
+                            <DataTemplate DataType="{x:Type model:DateCase}">
+                                <TextBox Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         Style="{StaticResource Grid_TextBox_Style}"/>
+                            </DataTemplate>
+                            <!-- Description case -->
+                            <DataTemplate DataType="{x:Type model:DescriptionCase}">
+                                <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource Grid_TextBox_Style}"/>
+                            </DataTemplate>
+                            <!-- Okay case -->
+                            <DataTemplate DataType="{x:Type model:OkayCase}">
+                                <CheckBox IsChecked="{Binding Path=IsOkay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
                             </DataTemplate>
                         </Border.Resources>
                         <ContentPresenter Content="{Binding}"/>

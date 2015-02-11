@@ -21,7 +21,12 @@ namespace D_Accounting
         /// </summary>
         private bool ModifyingColumns = false;
 
-        public ListCases()
+        /// <summary>
+        /// The view model
+        /// </summary>
+        private MainViewModel ViewModel;
+
+        public ListCases(MainViewModel vm)
         {
             Add(new FixDescriptionCase() { Row = 0, Column = 0, Name = "Account name" });
 
@@ -38,6 +43,8 @@ namespace D_Accounting
             Add(new GrayUnaccessibleCase() { Row = 2, Column = 2 });
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 1 });
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
+
+            ViewModel = vm;
         }
     
         /// <summary>
@@ -310,8 +317,8 @@ namespace D_Accounting
         {
             if (ModifyingColumns)
                 return;
-
- 	        AmountCase c = sender as AmountCase;
+            
+            AmountCase c = sender as AmountCase;
             OkayCase c1 = sender as OkayCase;
 
             int col = -1;
@@ -334,7 +341,10 @@ namespace D_Accounting
                 }
             }
             else // If it's an amount case, we have the column
+            {
                 col = c.Column;
+                ViewModel.AddDoCommand(new AmountChangedCommand(ViewModel, this, c, c.Amount, c.OldAmount));
+            }
 
             if (col != -1)
                 UpdateAmounts(col);

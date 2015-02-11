@@ -112,7 +112,7 @@ namespace D_Accounting
         /// </summary>
         public MainViewModel()
         {
-            Cases = new ListCases();
+            Cases = new ListCases(this);
         }
 
         // ***** Commands ***** //
@@ -225,7 +225,17 @@ namespace D_Accounting
         public void Do(D_Command c)
         {
             c.Execute();
+            AddDoCommand(c);
+        }
+
+        /// <summary>
+        /// Add a command executed for the first time
+        /// </summary>
+        /// <param name="c">The new command</param>
+        public void AddDoCommand(D_Command c)
+        {
             DoneCommands.Push(c);
+            UndoneCommands.Clear();
         }
 
         /// <summary>

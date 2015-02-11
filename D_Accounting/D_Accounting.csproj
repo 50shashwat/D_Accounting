@@ -59,6 +59,7 @@
     </Page>
     <Compile Include="AddAccountCommand.cs" />
     <Compile Include="AddOperationCommand.cs" />
+    <Compile Include="AmountChangedCommand.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

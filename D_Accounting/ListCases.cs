@@ -16,7 +16,10 @@ namespace D_Accounting
     /// </summary>
     public class ListCases : ObservableCollection<AbstractCase>
     {
-        private bool AddingColumn = false;
+        /// <summary>
+        /// If we are actually adding/deleting a column (do not call CaseChanged while modifiying the model)
+        /// </summary>
+        private bool ModifyingColumns = false;
 
         public ListCases()
         {
@@ -133,7 +136,7 @@ namespace D_Accounting
         /// <param name="newAccountName">The name of the new account</param>
         public void AddAccount(string newAccountName)
         {
-            AddingColumn = true;
+            ModifyingColumns = true;
 
             int oldColCount = ColumnCount;
             int addedColumnIndex = oldColCount - 2;
@@ -158,7 +161,7 @@ namespace D_Accounting
 
             OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
 
-            AddingColumn = false;
+            ModifyingColumns = false;
         }
 
         /// <summary>
@@ -167,6 +170,8 @@ namespace D_Accounting
         /// <param name="accountName">Name of the account that will be removed</param>
         public void RemoveAccount(string accountName)
         {
+            ModifyingColumns = true;
+
             // Find the column index
             int colIndex = -1;
             for (int col = 1; col < ColumnCount - 2; ++col)
@@ -190,11 +195,63 @@ namespace D_Accounting
             foreach (AbstractCase c in this.Where(c => c.Column > colIndex))
                 c.Column--;
 
+            // Delete useless rows
+            DeleteUselessRows();
+
             OnPropertyChanged(new PropertyChangedEventArgs("AccountNames"));
+
+            ModifyingColumns = false;
         }
 
+        /// <summary>
+        /// Deletes the useless rows in the table
+        /// </summary>
+        private void DeleteUselessRows()
+        {
+            // Delete rows with only GrayUnaccessibleCases
+            int rowIdx = 2;
+            while (rowIdx < RowCount - 2)
+            {
+                bool isOnlyUnaccessible = true;
+                for (int colIdx = 1; colIdx < ColumnCount - 2; ++colIdx)
+                {
+                    if (!(this[GetCaseIndex(colIdx, rowIdx)] is GrayUnaccessibleCase))
+                    {
+                        isOnlyUnaccessible = false;
+                        break;
+                    }
+                }
+
+                // Delete row + move up all below rows
+                if (isOnlyUnaccessible)
+                {
+                    // Deleting (at position 0, because when you delete => everything moves from one case
+                    for (int colIdx = 0; colIdx < ColumnCount; ++colIdx)
+                    {
+                        this.RemoveAt(GetCaseIndex(0, rowIdx));
+                    }
+                    // Moving
+                    for (int rowIdx2 = rowIdx; rowIdx2 < RowCount; ++rowIdx2)
+                    {
+                        for (int colIdx = 0; colIdx < ColumnCount; ++colIdx)
+                        {
+                            this[GetCaseIndex(colIdx, rowIdx2)].Row--;
+                        }
+                    }
+                }
+                else
+                    ++rowIdx;
+            }
+        }
+
+        /// <summary>
+        /// Adds an operation to the selected account
+        /// </summary>
+        /// <param name="selectedAccount">The selected account</param>
         public void AddOperation(string selectedAccount)
         {
+            ModifyingColumns = true;
+
             int addedRowIndex = RowCount - 2;
             int accountCol = 0;
             while (!AccountNames.ElementAt(accountCol++).Equals(selectedAccount)) ; // Take the index of the AccountName + 1 (because the accounts begin on the second column)
@@ -219,8 +276,17 @@ namespace D_Accounting
 
             // Add description case
             Add(new DescriptionCase() { Row = addedRowIndex, Column = ColumnCount - 1, Description = ""});
+
+            ModifyingColumns = false;
+            UpdateAmounts(accountCol);
         }
 
+        /// <summary>
+        /// Overriden method : if the collection changes : 
+        /// adding an event (if case added) or deleting an event (if case is deleted)
+        /// => If an AmountCase or an OkayCase value changes =>  call method
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnCollectionChanged(e);
@@ -242,7 +308,7 @@ namespace D_Accounting
 
         private void CaseChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (AddingColumn)
+            if (ModifyingColumns)
                 return;
 
  	        AmountCase c = sender as AmountCase;
@@ -307,15 +373,18 @@ namespace D_Accounting
             // For every operation row
             for (int i = 2; i < rowC - 2; ++i)
             {
-                AbstractCase c = this[GetCaseIndex(col, i)];
+                AmountCase c = this[GetCaseIndex(col, i)] as AmountCase;
 
-                if (!(c is AmountCase))
+                if (c == null)
                     continue;
+                decimal caseAmount = c.Amount;
 
-                decimal caseAmount = (c as AmountCase).Amount;
-
+                // Theoretical amount
                 sumTheo += caseAmount;
-                if ((this[GetCaseIndex(colC2, i)] as OkayCase).IsOkay)
+
+                // Real amount
+                OkayCase okayC = this[GetCaseIndex(colC2, i)] as OkayCase;
+                if (okayC != null && okayC.IsOkay)
                     sumReal += caseAmount;
             }
 

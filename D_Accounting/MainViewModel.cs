@@ -8,6 +8,12 @@ using System.Windows.Input;
 
 namespace D_Accounting
 {
+    // TODO : delete operation button
+    // TODO : format date for operations
+    // TODO : sort table automatically by date
+    // TODO : save command
+    // TODO : canExecute save just if something changed since last save
+    // TODO : undo/redo
     public class MainViewModel : INotifyPropertyChanged
     {
         public Action CloseAction
@@ -87,7 +93,6 @@ namespace D_Accounting
         }
 
         // ***** Commands ***** //
-        // TODO : undo/redo : save command : design pattern command
         #region Commands
         #region Close command
         public ICommand CloseCommand
@@ -111,7 +116,6 @@ namespace D_Accounting
         {
             get
             {
-                // TODO : maybe the save command could have an CanExecute attribute : so if saved and no new changes done => inactive button
                 return mSaveCommand ?? (mSaveCommand = new CommandHandler(Save));
             }
         }
@@ -119,7 +123,6 @@ namespace D_Accounting
         
         private void Save()
         {
-            Console.Beep(); // TODO
         }
         #endregion // Save command
 
@@ -176,8 +179,6 @@ namespace D_Accounting
             Cases.AddOperation(mSelectedAccount);
         }
         #endregion
-
-        // TODO : save command
 
         #endregion // Commands
 

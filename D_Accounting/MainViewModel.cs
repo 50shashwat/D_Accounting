@@ -10,24 +10,44 @@ namespace D_Accounting
 {
     // TODO : delete operation button
     // TODO : format date for operations
-    // TODO : sort table automatically by date
+    // TODO : sort table automatically by date (not sure)
     // TODO : save command
     // TODO : canExecute save just if something changed since last save
-    // TODO : undo/redo
+    // TODO : undo/redo (+ keyboard Ctrl-Z)
+    // TODO : menu bar (undo/redo + save + load + change default load file name)
     public class MainViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Close action of the main window
+        /// </summary>
         public Action CloseAction
         {
-            get;
+            private get;
             set;
         }
 
+        /// <summary>
+        /// The data
+        /// </summary>
         public ListCases Cases
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Done commands
+        /// </summary>
+        private Stack<D_Command> DoneCommands = new Stack<D_Command>();
+
+        /// <summary>
+        /// Undone commands
+        /// </summary>
+        private Stack<D_Command> UndoneCommands = new Stack<D_Command>();
+
+        /// <summary>
+        /// The written account (adding & deleting)
+        /// </summary>
         public String WrittenAccount
         {
             get
@@ -68,6 +88,9 @@ namespace D_Accounting
         }
         private String mWrittenAccount;
 
+        /// <summary>
+        /// The selected account (adding operations)
+        /// </summary>
         public String SelectedAccount
         {
             set
@@ -120,9 +143,21 @@ namespace D_Accounting
             }
         }
         private ICommand mSaveCommand;
-        
+
+        bool undoRedo = true; // DELETE later
         private void Save()
         {
+            // CHANGE later => test
+            if (undoRedo)
+            {
+                Undo();
+                undoRedo = false;
+            }
+            else
+            {
+                Redo();
+                undoRedo = true;
+            }
         }
         #endregion // Save command
 
@@ -139,7 +174,7 @@ namespace D_Accounting
 
         private void AddAccount()
         {
-            Cases.AddAccount(mWrittenAccount);
+            Do(new AddAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
         #endregion // Add account command
@@ -157,7 +192,7 @@ namespace D_Accounting
 
         private void RemoveAccount()
         {
-            Cases.RemoveAccount(mWrittenAccount);
+            Do(new DeleteAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
 
@@ -176,12 +211,49 @@ namespace D_Accounting
 
         private void AddOperation()
         {
-            Cases.AddOperation(mSelectedAccount);
+            Do(new AddOperationCommand(this, Cases, mSelectedAccount));
         }
         #endregion
 
         #endregion // Commands
 
+        #region Do_Undo_Redo
+        /// <summary>
+        /// Execute a command for the first time
+        /// </summary>
+        /// <param name="c">The new command</param>
+        public void Do(D_Command c)
+        {
+            c.Execute();
+            DoneCommands.Push(c);
+        }
+
+        /// <summary>
+        /// Undoes the last done command
+        /// </summary>
+        public void Undo()
+        {
+            if (DoneCommands.Count == 0)
+                return;
+
+            D_Command c = DoneCommands.Pop();
+            c.ExecuteReverse();
+            UndoneCommands.Push(c);
+        }
+
+        /// <summary>
+        /// Redoes the last undone command
+        /// </summary>
+        public void Redo()
+        {
+            if (UndoneCommands.Count == 0)
+                return;
+
+            D_Command c = UndoneCommands.Pop();
+            c.Execute();
+            DoneCommands.Push(c);
+        }
+        #endregion // Do_Undo_Redo
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(String propertyName)

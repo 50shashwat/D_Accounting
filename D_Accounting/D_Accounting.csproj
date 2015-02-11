@@ -57,11 +57,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AddAccountCommand.cs" />
+    <Compile Include="AddOperationCommand.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CommandHandler.cs" />
+    <Compile Include="DeleteAccountCommand.cs" />
+    <Compile Include="D_Command.cs" />
     <Compile Include="ListCases.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">

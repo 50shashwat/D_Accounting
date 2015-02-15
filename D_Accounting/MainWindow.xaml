@@ -49,6 +49,10 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=RedoCommand}"/>
+    </Window.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>

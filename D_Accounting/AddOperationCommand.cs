@@ -17,12 +17,12 @@ namespace D_Accounting
 
         public override void Execute()
         {
-            ListCases.AddOperation(SelectedAcccount);
+            this.ListCases.AddOperation(SelectedAcccount);
         }
 
         public override void ExecuteReverse()
         {
-            // TODO : delete operation
+            this.ListCases.DeleteOperation(SelectedAcccount);
         }
     }
 }

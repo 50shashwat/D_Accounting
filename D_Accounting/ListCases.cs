@@ -289,6 +289,54 @@ namespace D_Accounting
         }
 
         /// <summary>
+        /// Deletes the last operation of the selected account
+        /// </summary>
+        /// <param name="selectedAcccount">The selected account</param>
+        public void DeleteOperation(string selectedAcccount)
+        {
+            ModifyingColumns = true;
+
+            // Find the column index
+            int colIdx = -1;
+            for (int col = 1; col < ColumnCount - 2; ++col)
+            {
+                if ((this[col] as FixDescriptionCase).Name.Equals(selectedAcccount))
+                {
+                    colIdx = col;
+                    break;
+                }
+            }
+
+            if (colIdx == -1)
+                return;
+
+            // Find the row index of the last operation
+            int rowIdx = -1;
+            for (int row = RowCount - 2; row > 1; --row)
+            {
+                if (this[GetCaseIndex(colIdx, row)] is AmountCase)
+                {
+                    rowIdx = row;
+                    break;
+                }
+            }
+
+            if (rowIdx == -1)
+                return;
+
+            // Delete the whole row
+            for (int i = 0; i < ColumnCount; ++i)
+                this.RemoveAt(GetCaseIndex(0, rowIdx));
+
+
+            // Move all rows below => one row up
+            foreach (AbstractCase c in this.Where(c => c.Row > rowIdx))
+                c.Row--;
+
+            ModifyingColumns = false;
+        }
+
+        /// <summary>
         /// Overriden method : if the collection changes : 
         /// adding an event (if case added) or deleting an event (if case is deleted)
         /// => If an AmountCase or an OkayCase value changes =>  call method

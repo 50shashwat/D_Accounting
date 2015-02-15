@@ -10,8 +10,8 @@ namespace D_Accounting
 {
     // TODO : delete operation button
     // TODO : format date for operations
-    // TODO : sort table automatically by date (not sure)
-    // TODO : save command
+    // TODO : sort table automatically by date (NO because => delete an operation = deleting the last one)
+    // TODO : save command (serialization of the listcases)
     // TODO : canExecute save just if something changed since last save
     // TODO : undo/redo (+ keyboard Ctrl-Z)
     // TODO : menu bar (undo/redo + save + load + change default load file name)
@@ -144,20 +144,9 @@ namespace D_Accounting
         }
         private ICommand mSaveCommand;
 
-        bool undoRedo = true; // DELETE later
         private void Save()
         {
-            // CHANGE later => test
-            if (undoRedo)
-            {
-                Undo();
-                undoRedo = false;
-            }
-            else
-            {
-                Redo();
-                undoRedo = true;
-            }
+            // implement Save method
         }
         #endregion // Save command
 
@@ -215,9 +204,7 @@ namespace D_Accounting
         }
         #endregion
 
-        #endregion // Commands
-
-        #region Do_Undo_Redo
+        #region Do_Undo_Redo commands
         /// <summary>
         /// Execute a command for the first time
         /// </summary>
@@ -239,9 +226,20 @@ namespace D_Accounting
         }
 
         /// <summary>
+        /// Undo command
+        /// </summary>
+        public ICommand UndoCommand
+        {
+            get
+            {
+                return new CommandHandler(Undo);
+            }
+        }
+
+        /// <summary>
         /// Undoes the last done command
         /// </summary>
-        public void Undo()
+        private void Undo()
         {
             if (DoneCommands.Count == 0)
                 return;
@@ -252,9 +250,20 @@ namespace D_Accounting
         }
 
         /// <summary>
+        /// Redo command
+        /// </summary>
+        public ICommand RedoCommand
+        {
+            get
+            {
+                return new CommandHandler(Redo);
+            }
+        }
+
+        /// <summary>
         /// Redoes the last undone command
         /// </summary>
-        public void Redo()
+        private void Redo()
         {
             if (UndoneCommands.Count == 0)
                 return;
@@ -264,6 +273,8 @@ namespace D_Accounting
             DoneCommands.Push(c);
         }
         #endregion // Do_Undo_Redo
+
+        #endregion // Commands
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(String propertyName)

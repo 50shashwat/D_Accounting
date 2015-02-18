@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,22 @@ namespace D_Accounting
         /// </summary>
         private Stack<D_Command> UndoneCommands = new Stack<D_Command>();
 
+        public bool DoneEmpty
+        {
+            get
+            {
+                return DoneCommands.Count == 0 ? true : false;
+            }
+        }
+
+        public bool UndoneEmpty
+        {
+            get
+            {
+                return UndoneCommands.Count == 0 ? true : false;
+            }
+        }
+
         /// <summary>
         /// Execute a command for the first time
         /// </summary>
@@ -26,15 +43,6 @@ namespace D_Accounting
         internal void Do(D_Command c)
         {
             c.Execute();
-            AddDoCommand(c);
-        }
-
-        /// <summary>
-        /// Add a command executed for the first time (without executing it)
-        /// </summary>
-        /// <param name="c">The new command</param>
-        private void AddDoCommand(D_Command c)
-        {
             DoneCommands.Push(c);
             UndoneCommands.Clear();
         }

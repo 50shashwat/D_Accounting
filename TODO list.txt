@@ -1,0 +1,13 @@
+*Delete operation button
+*Format date for operations
+*Sort table automatically by date (NO because => delete an operation = deleting the last one)
+*Save command (serialization of the listcases)
+*canExecute save just if something changed since last save
+*Menu bar (undo/redo + save + load + change default load file name)
+	- New : tout à 0
+		Undo/redo
+	- Save : fichier binaire
+		PAS UNDOable
+	- Rename data file : change le nom du fichier utilisé par défaut
+		PAS UNDOable
+	- Undo/Redo => avec CanExecute

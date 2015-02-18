@@ -8,13 +8,6 @@ using System.Windows.Input;
 
 namespace D_Accounting
 {
-    // TODO : delete operation button
-    // TODO : format date for operations
-    // TODO : sort table automatically by date (NO because => delete an operation = deleting the last one)
-    // TODO : save command (serialization of the listcases)
-    // TODO : canExecute save just if something changed since last save
-    // TODO : undo/redo (+ keyboard Ctrl-Z)
-    // TODO : menu bar (undo/redo + save + load + change default load file name)
     public class MainViewModel : INotifyPropertyChanged
     {
         /// <summary>
@@ -134,7 +127,7 @@ namespace D_Accounting
         {
             get
             {
-                return mSaveCommand ?? (mSaveCommand = new CommandHandler(Save));
+                return new CommandHandler(Save);
             }
         }
         private ICommand mSaveCommand;
@@ -158,7 +151,7 @@ namespace D_Accounting
 
         private void AddAccount()
         {
-            UndoRedoC.Do(new AddAccountCommand(this, Cases, mWrittenAccount));
+            DoCommand(new AddAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
         #endregion // Add account command
@@ -176,7 +169,7 @@ namespace D_Accounting
 
         private void RemoveAccount()
         {
-            UndoRedoC.Do(new DeleteAccountCommand(this, Cases, mWrittenAccount));
+            DoCommand(new DeleteAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
 
@@ -195,7 +188,7 @@ namespace D_Accounting
 
         private void AddOperation()
         {
-            UndoRedoC.Do(new AddOperationCommand(this, Cases, mSelectedAccount));
+            DoCommand(new AddOperationCommand(this, Cases, mSelectedAccount));
         }
         #endregion
 
@@ -207,8 +200,14 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(UndoRedoC.Undo);
+                return new CommandHandler(Undo, !UndoRedoC.DoneEmpty);
             }
+        }
+
+        private void Undo()
+        {
+            UndoRedoC.Undo();
+            UpdateUndoRedoCommands();
         }
 
         /// <summary>
@@ -218,10 +217,29 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(UndoRedoC.Redo);
+                return new CommandHandler(Redo, !UndoRedoC.UndoneEmpty);
             }
         }
+
+        private void Redo()
+        {
+            UndoRedoC.Redo();
+            UpdateUndoRedoCommands();
+        }
+
         #endregion // UndoRedo commands
+
+        private void DoCommand(D_Command c)
+        {
+            UndoRedoC.Do(c);
+            UpdateUndoRedoCommands();
+        }
+
+        private void UpdateUndoRedoCommands()
+        {
+            OnPropertyChanged("UndoCommand");
+            OnPropertyChanged("RedoCommand");
+        }
 
         #endregion // Commands
 

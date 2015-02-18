@@ -50,142 +50,154 @@
         </Style>
     </Window.Resources>
     <Window.InputBindings>
-        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=UndoCommand}"/>
-        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=RedoCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=UndoCommand, Mode=OneWay}"/>
+        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=RedoCommand, Mode=OneWay}"/>
     </Window.InputBindings>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <!-- Top menu -->
-        <Grid Grid.Row="0">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New"/>
+                <MenuItem Header="_Save"/>
+                <MenuItem Header="_Rename loaded data file"/>
+            </MenuItem>
+            <MenuItem Header="_Edition">
+                <MenuItem Header="_Undo" Command="{Binding Source={StaticResource mMainViewModel}, Path=UndoCommand, Mode=OneWay}"/>
+                <MenuItem Header="_Redo" Command="{Binding Source={StaticResource mMainViewModel}, Path=RedoCommand, Mode=OneWay}"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0">
-                <Button Style="{StaticResource Default_Button_Style}"
-                        Command="{Binding Source={StaticResource mMainViewModel}, Path=AddAccountCommand}">
-                    <TextBlock Text="Add account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
+        
+            <!-- Top menu -->
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <WrapPanel Grid.Row="0">
+                    <Button Style="{StaticResource Default_Button_Style}"
+                            Command="{Binding Source={StaticResource mMainViewModel}, Path=AddAccountCommand}">
+                        <TextBlock Text="Add account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
+                    </Button>
+                    <Button Style="{StaticResource Default_Button_Style}"
+                            Command="{Binding Source={StaticResource mMainViewModel}, Path=RemoveAccountCommand}">
+                        <TextBlock Text="Remove account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
+                    </Button>
+                    <TextBlock Text="Account :" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
+                    <TextBox Height="27" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center"
+                             Style="{StaticResource Default_TextBox_Style}"
+                             Text="{Binding Source={StaticResource mMainViewModel},
+                                            Path=WrittenAccount,
+                                            Mode=TwoWay,
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                </WrapPanel>
+                <WrapPanel Grid.Row="1">
+                    <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=AddOperationCommand}">
+                        <TextBlock Text="Add" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
+                    </Button>
+                    <TextBlock Text="operation to" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource mMainViewModel}, Path=Cases.AccountNames, Mode=OneWay}"
+                              SelectedItem="{Binding Source={StaticResource mMainViewModel}, Path=SelectedAccount, Mode=OneWayToSource}"
+                              Style="{StaticResource Default_ComboBox_Style}">
+                        <ComboBox.ItemTemplate>
+                            <ItemContainerTemplate>
+                                <TextBlock Text="{Binding}" Style="{StaticResource Default_TextBlock_Style}"/>
+                            </ItemContainerTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </WrapPanel>
+            </Grid>
+        
+            <!-- Main Grid : containing the data-->
+            <ItemsControl Grid.Row="1"
+                          Margin="3"
+                          ItemsSource="{Binding Source={StaticResource CasesView}}" Name="mItemsControl">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid Loaded="Event_LoadMainDataGrid_CreateRowsColumns">
+                            <!-- Just for the XAML UI Preview -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Grid.Row" Value="{Binding Row}"/>
+                        <Setter Property="Grid.Column" Value="{Binding Column}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type model:AbstractCase}">
+                        <Border BorderBrush="Black" BorderThickness="1">
+                            <Border.Resources>
+                                <!-- Fix Description Case -->
+                                <DataTemplate DataType="{x:Type model:FixDescriptionCase}">
+                                    <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Default_TextBlock_Style}"/>
+                                </DataTemplate>
+                                <!-- Gray Unaccessible Case -->
+                                <DataTemplate DataType="{x:Type model:GrayUnaccessibleCase}">
+                                    <TextBlock Background="Gray"/>
+                                </DataTemplate>
+                                <!-- Amount case -->
+                                <DataTemplate DataType="{x:Type model:AmountCase}">
+                                    <WrapPanel>
+                                        <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Amount_TextBox_Style}"/>
+                                        <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
+                                    </WrapPanel>
+                                </DataTemplate>
+                                <!-- Readonly Amount case -->
+                                <DataTemplate DataType="{x:Type model:ReadonlyAmountCase}">
+                                    <WrapPanel>                            
+                                        <TextBlock Text="{Binding Path=Amount, Mode=OneWay}"  Style="{StaticResource Amount_TextBlock_Style}"/>
+                                        <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
+                                    </WrapPanel>
+                                </DataTemplate>
+                                <!-- Date case -->
+                                <DataTemplate DataType="{x:Type model:DateCase}">
+                                    <TextBox Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             Style="{StaticResource Grid_TextBox_Style}"/>
+                                </DataTemplate>
+                                <!-- Description case -->
+                                <DataTemplate DataType="{x:Type model:DescriptionCase}">
+                                    <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource Grid_TextBox_Style}"/>
+                                </DataTemplate>
+                                <!-- Okay case -->
+                                <DataTemplate DataType="{x:Type model:OkayCase}">
+                                    <CheckBox IsChecked="{Binding Path=IsOkay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </Border.Resources>
+                            <ContentPresenter Content="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        
+            <!-- Bottom menu -->
+            <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
+                <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}">
+                    <TextBlock Text="Save" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
-                <Button Style="{StaticResource Default_Button_Style}"
-                        Command="{Binding Source={StaticResource mMainViewModel}, Path=RemoveAccountCommand}">
-                    <TextBlock Text="Remove account" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
+                <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=CloseCommand}">
+                    <TextBlock Text="Close" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
                 </Button>
-                <TextBlock Text="Account :" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
-                <TextBox Height="27" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center"
-                         Style="{StaticResource Default_TextBox_Style}"
-                         Text="{Binding Source={StaticResource mMainViewModel},
-                                        Path=WrittenAccount,
-                                        Mode=TwoWay,
-                                        UpdateSourceTrigger=PropertyChanged}"/>
-            </WrapPanel>
-            <WrapPanel Grid.Row="1">
-                <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=AddOperationCommand}">
-                    <TextBlock Text="Add" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
-                </Button>
-                <TextBlock Text="operation to" Style="{StaticResource Default_TextBlock_Style}" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource mMainViewModel}, Path=Cases.AccountNames, Mode=OneWay}"
-                          SelectedItem="{Binding Source={StaticResource mMainViewModel}, Path=SelectedAccount, Mode=OneWayToSource}"
-                          Style="{StaticResource Default_ComboBox_Style}">
-                    <ComboBox.ItemTemplate>
-                        <ItemContainerTemplate>
-                            <TextBlock Text="{Binding}" Style="{StaticResource Default_TextBlock_Style}"/>
-                        </ItemContainerTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
             </WrapPanel>
         </Grid>
-        
-        <!-- Main Grid : containing the data-->
-        <ItemsControl Grid.Row="1"
-                      Margin="3"
-                      ItemsSource="{Binding Source={StaticResource CasesView}}" Name="mItemsControl">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid Loaded="Event_LoadMainDataGrid_CreateRowsColumns">
-                        <!-- Just for the XAML UI Preview -->
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemContainerStyle>
-                <Style>
-                    <Setter Property="Grid.Row" Value="{Binding Row}"/>
-                    <Setter Property="Grid.Column" Value="{Binding Column}"/>
-                </Style>
-            </ItemsControl.ItemContainerStyle>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type model:AbstractCase}">
-                    <Border BorderBrush="Black" BorderThickness="1">
-                        <Border.Resources>
-                            <!-- Fix Description Case -->
-                            <DataTemplate DataType="{x:Type model:FixDescriptionCase}">
-                                <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Default_TextBlock_Style}"/>
-                            </DataTemplate>
-                            <!-- Gray Unaccessible Case -->
-                            <DataTemplate DataType="{x:Type model:GrayUnaccessibleCase}">
-                                <TextBlock Background="Gray"/>
-                            </DataTemplate>
-                            <!-- Amount case -->
-                            <DataTemplate DataType="{x:Type model:AmountCase}">
-                                <WrapPanel>
-                                    <TextBox Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Amount_TextBox_Style}"/>
-                                    <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
-                                </WrapPanel>
-                            </DataTemplate>
-                            <!-- Readonly Amount case -->
-                            <DataTemplate DataType="{x:Type model:ReadonlyAmountCase}">
-                                <WrapPanel>                            
-                                    <TextBlock Text="{Binding Path=Amount, Mode=OneWay}"  Style="{StaticResource Amount_TextBlock_Style}"/>
-                                    <TextBlock Text="€" Style="{StaticResource Default_TextBlock_Style}" Margin="2"/>
-                                </WrapPanel>
-                            </DataTemplate>
-                            <!-- Date case -->
-                            <DataTemplate DataType="{x:Type model:DateCase}">
-                                <TextBox Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                         Style="{StaticResource Grid_TextBox_Style}"/>
-                            </DataTemplate>
-                            <!-- Description case -->
-                            <DataTemplate DataType="{x:Type model:DescriptionCase}">
-                                <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource Grid_TextBox_Style}"/>
-                            </DataTemplate>
-                            <!-- Okay case -->
-                            <DataTemplate DataType="{x:Type model:OkayCase}">
-                                <CheckBox IsChecked="{Binding Path=IsOkay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
-                            </DataTemplate>
-                        </Border.Resources>
-                        <ContentPresenter Content="{Binding}"/>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        
-        <!-- Bottom menu -->
-        <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
-            <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}">
-                <TextBlock Text="Save" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
-            </Button>
-            <Button Style="{StaticResource Default_Button_Style}" Command="{Binding Source={StaticResource mMainViewModel}, Path=CloseCommand}">
-                <TextBlock Text="Close" Style="{StaticResource ButtonContent_TextBlock_Style}"/>
-            </Button>
-        </WrapPanel>
-    </Grid>
+    </DockPanel>
 </Window>

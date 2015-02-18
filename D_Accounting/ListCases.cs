@@ -334,6 +334,7 @@ namespace D_Accounting
                 c.Row--;
 
             ModifyingColumns = false;
+            UpdateAmounts(colIdx);
         }
 
         /// <summary>
@@ -361,6 +362,11 @@ namespace D_Accounting
             }
         }
 
+        /// <summary>
+        /// If the value of an AmountCase or an OkayCase changes => this method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CaseChanged(object sender, PropertyChangedEventArgs e)
         {
             if (ModifyingColumns)
@@ -388,10 +394,9 @@ namespace D_Accounting
                     }
                 }
             }
-            else // If it's an amount case, we have the column
+            else // If it's an amount case, we have the column that needs to be updated
             {
                 col = c.Column;
-                ViewModel.AddDoCommand(new AmountChangedCommand(ViewModel, this, c, c.Amount, c.OldAmount));
             }
 
             if (col != -1)

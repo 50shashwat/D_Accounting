@@ -16,19 +16,12 @@ namespace D_AccountingCore
             }
             set
             {
-                OldAmount = mAmount;
                 mAmount = value;
                 OnPropertyChanged("Amount");
                 OnPropertyChanged("IsNegative");
             }
         }
         private decimal mAmount;
-
-        public decimal OldAmount
-        {
-            get;
-            private set;
-        }
 
         public bool IsNegative
         {

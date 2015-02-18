@@ -36,14 +36,9 @@ namespace D_Accounting
         }
 
         /// <summary>
-        /// Done commands
+        /// The undo-redo controller
         /// </summary>
-        private Stack<D_Command> DoneCommands = new Stack<D_Command>();
-
-        /// <summary>
-        /// Undone commands
-        /// </summary>
-        private Stack<D_Command> UndoneCommands = new Stack<D_Command>();
+        private UndoRedoControl UndoRedoC = new UndoRedoControl();
 
         /// <summary>
         /// The written account (adding & deleting)
@@ -163,7 +158,7 @@ namespace D_Accounting
 
         private void AddAccount()
         {
-            Do(new AddAccountCommand(this, Cases, mWrittenAccount));
+            UndoRedoC.Do(new AddAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
         #endregion // Add account command
@@ -181,7 +176,7 @@ namespace D_Accounting
 
         private void RemoveAccount()
         {
-            Do(new DeleteAccountCommand(this, Cases, mWrittenAccount));
+            UndoRedoC.Do(new DeleteAccountCommand(this, Cases, mWrittenAccount));
             WrittenAccount = "";
         }
 
@@ -200,31 +195,11 @@ namespace D_Accounting
 
         private void AddOperation()
         {
-            Do(new AddOperationCommand(this, Cases, mSelectedAccount));
+            UndoRedoC.Do(new AddOperationCommand(this, Cases, mSelectedAccount));
         }
         #endregion
 
-        #region Do_Undo_Redo commands
-        /// <summary>
-        /// Execute a command for the first time
-        /// </summary>
-        /// <param name="c">The new command</param>
-        public void Do(D_Command c)
-        {
-            c.Execute();
-            AddDoCommand(c);
-        }
-
-        /// <summary>
-        /// Add a command executed for the first time
-        /// </summary>
-        /// <param name="c">The new command</param>
-        public void AddDoCommand(D_Command c)
-        {
-            DoneCommands.Push(c);
-            UndoneCommands.Clear();
-        }
-
+        #region UndoRedo commands
         /// <summary>
         /// Undo command
         /// </summary>
@@ -232,21 +207,8 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(Undo);
+                return new CommandHandler(UndoRedoC.Undo);
             }
-        }
-
-        /// <summary>
-        /// Undoes the last done command
-        /// </summary>
-        private void Undo()
-        {
-            if (DoneCommands.Count == 0)
-                return;
-
-            D_Command c = DoneCommands.Pop();
-            c.ExecuteReverse();
-            UndoneCommands.Push(c);
         }
 
         /// <summary>
@@ -256,23 +218,10 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(Redo);
+                return new CommandHandler(UndoRedoC.Redo);
             }
         }
-
-        /// <summary>
-        /// Redoes the last undone command
-        /// </summary>
-        private void Redo()
-        {
-            if (UndoneCommands.Count == 0)
-                return;
-
-            D_Command c = UndoneCommands.Pop();
-            c.Execute();
-            DoneCommands.Push(c);
-        }
-        #endregion // Do_Undo_Redo
+        #endregion // UndoRedo commands
 
         #endregion // Commands
 

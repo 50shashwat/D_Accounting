@@ -100,7 +100,7 @@ namespace D_Accounting
         /// </summary>
         public MainViewModel()
         {
-            Cases = new ListCases(this);
+            Cases = new ListCases();
         }
 
         // ***** Commands ***** //
@@ -134,7 +134,8 @@ namespace D_Accounting
 
         private void Save()
         {
-            // implement Save method
+            string path = "data.xml";
+            new ListCasesXmlWriterParser().WriteListCases(Cases);
         }
         #endregion // Save command
 

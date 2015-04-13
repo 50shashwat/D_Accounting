@@ -8,25 +8,23 @@ using System.Threading.Tasks;
 using D_AccountingCore;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace D_Accounting
 {
     /// <summary>
     /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading a book)
     /// </summary>
-    public class ListCases : ObservableCollection<AbstractCase>
+    public class ListCases : ObservableCollection<AbstractCase>, IXmlSerializable
     {
         /// <summary>
         /// If we are actually adding/deleting a column (do not call CaseChanged while modifiying the model)
         /// </summary>
         private bool ModifyingColumns = false;
 
-        /// <summary>
-        /// The view model
-        /// </summary>
-        private MainViewModel ViewModel;
-
-        public ListCases(MainViewModel vm)
+        public ListCases()
         {
             Add(new FixDescriptionCase() { Row = 0, Column = 0, Name = "Account name" });
 
@@ -43,8 +41,11 @@ namespace D_Accounting
             Add(new GrayUnaccessibleCase() { Row = 2, Column = 2 });
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 1 });
             Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
+        }
 
-            ViewModel = vm;
+        public ListCases(XmlReader reader)
+        {
+            ReadXml(reader);
         }
     
         /// <summary>
@@ -454,6 +455,26 @@ namespace D_Accounting
             // Update real amount & theoretical amount
             (this[GetCaseIndex(col, rowC - 2)] as ReadonlyAmountCase).Amount = sumReal;
             (this[GetCaseIndex(col, rowC - 1)] as ReadonlyAmountCase).Amount = sumTheo;
+        }
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            foreach (AbstractCase c in this)
+            {
+                writer.WriteStartElement(c.XmlName);
+                c.WriteXml(writer);
+                writer.WriteEndElement();
+            }
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+
+using D_AccountingCore;
 
 namespace D_Accounting
 {
@@ -11,19 +14,47 @@ namespace D_Accounting
     {
         private XmlReader reader = null;
 
-        public ListCasesXmlReaderParser(string filePath)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <exception cref="System.IO.DirectoryNotFoundException">If the directory does not exist</exception>
+        /// <exception cref="System.IO.FileNotFoundException">If the file does not exist</exception>
+        internal ListCasesXmlReaderParser(FileInfo filePath)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
 
-            reader = XmlReader.Create(filePath, settings);
+            try
+            {
+                reader = XmlReader.Create(filePath.ToString(), settings);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                throw e;
+            }
+            catch (FileNotFoundException e)
+            {
+                throw e;
+            }
         }
 
-        public ListCases Read()
+        internal bool FileExists
         {
-            return new ListCases(reader);
+            get
+            {
+                return true; // TODO (error ?)
+            }
+        }
+
+        internal ListCases Read()
+        {
+            ListCases c = new ListCases(reader);
+            reader.Close();
+
+            return c;
         }
 
     }

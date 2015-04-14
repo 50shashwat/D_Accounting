@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,12 +96,24 @@ namespace D_Accounting
         }
         private string mSelectedAccount;
 
+        private FileInfo dataFilePath = new FileInfo(String.Format("{0}\\data\\{1}",
+                                            Directory.GetParent(Directory.GetCurrentDirectory()).FullName,
+                                            "d_accounting_data.xml"));
+
         /// <summary>
         /// Default constructor of the main VM
         /// </summary>
         public MainViewModel()
         {
-            Cases = new ListCases();
+            try
+            {
+                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(dataFilePath);
+                Cases = readParser.Read();
+            }
+            catch (Exception)
+            {
+                Cases = new ListCases();
+            }
         }
 
         // ***** Commands ***** //
@@ -134,8 +147,7 @@ namespace D_Accounting
 
         private void Save()
         {
-            string path = "data.xml";
-            new ListCasesXmlWriterParser().WriteListCases(Cases);
+            new ListCasesXmlWriterParser(dataFilePath).Write(Cases);
         }
         #endregion // Save command
 

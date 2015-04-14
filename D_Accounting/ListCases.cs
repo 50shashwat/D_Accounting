@@ -464,7 +464,41 @@ namespace D_Accounting
 
         public void ReadXml(XmlReader reader)
         {
-            throw new NotImplementedException();
+            reader.ReadStartElement(XmlTags.ListCases);
+
+            while (reader.NodeType != XmlNodeType.EndElement)
+            {
+                AbstractCase c = null;
+                switch (reader.LocalName)
+                {
+                    case AmountCase.XMLNAME:
+                        c = new AmountCase(reader);
+                        break;
+                    case DateCase.XMLNAME:
+                        c = new DateCase(reader);
+                        break;
+                    case DescriptionCase.XMLNAME:
+                        c = new DescriptionCase(reader);
+                        break;
+                    case FixDescriptionCase.XMLNAME:
+                        c = new FixDescriptionCase(reader);
+                        break;
+                    case GrayUnaccessibleCase.XMLNAME:
+                        c = new GrayUnaccessibleCase(reader);
+                        break;
+                    case OkayCase.XMLNAME:
+                        c = new OkayCase(reader);
+                        break;
+                    case ReadonlyAmountCase.XMLNAME:
+                        c = new ReadonlyAmountCase(reader);
+                        break;
+                }
+                if (c == null)
+                    throw new Exception("Parsing error. Are you sure the xml file is correct?");
+                Add(c);
+            }
+
+            reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer)

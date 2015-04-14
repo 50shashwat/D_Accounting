@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace D_AccountingCore
 {
-    public abstract class AbstractCase : INotifyPropertyChanged
+    public abstract class AbstractCase : INotifyPropertyChanged, IXmlSerializable
     {
         public int Row
         {
@@ -36,6 +38,15 @@ namespace D_AccountingCore
             }
         }
         private int mColumn;
+
+        public const string XMLNAME = "AbstractCase";
+        public abstract string XmlName { get ; }
+
+        public AbstractCase() {}
+        public AbstractCase(XmlReader r)
+        {
+            ReadXml(r);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(String propertyName)
@@ -108,6 +119,27 @@ namespace D_AccountingCore
         public bool Equals(AbstractCase other)
         {
             return (this.Column == other.Column) && (this.Row == other.Row);
+        }
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Reads only the start element attributes
+        /// </summary>
+        /// <param name="reader"></param>
+        public virtual void ReadXml(XmlReader reader)
+        {
+            Row = Int32.Parse(reader.GetAttribute(XmlTags.Row));
+            Column = Int32.Parse(reader.GetAttribute(XmlTags.Column));
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString(XmlTags.Row, Row.ToString());
+            writer.WriteAttributeString(XmlTags.Column, Column.ToString());
         }
     }
 }

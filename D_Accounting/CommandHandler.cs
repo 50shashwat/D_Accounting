@@ -24,7 +24,7 @@ namespace D_Accounting
         }
 
         public event EventHandler CanExecuteChanged;
-
+            
         public void Execute(object parameter)
         {
             action();

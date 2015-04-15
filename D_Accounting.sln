@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D_AccountingCore", "D_Accou
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{27F09660-3607-4FD2-9B0A-D97D9D516274}"
 	ProjectSection(SolutionItems) = preProject
-		README.txt = README.txt
+		README.md = README.md
 		TODO list.txt = TODO list.txt
 	EndProjectSection
 EndProject

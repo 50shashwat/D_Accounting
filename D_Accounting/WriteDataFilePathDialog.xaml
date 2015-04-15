@@ -1,16 +1,24 @@
 ﻿<Window x:Class="D_Accounting.WriteDataFilePathDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Choose new data file path" Height="200" Width="700">
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Title="Choose new data file path" Height="130" Width="700">
+    <Window.Resources>
+        <system:Double x:Key="buttonSize">60</system:Double>
+    </Window.Resources>
     <Grid>
         <StackPanel>
-            <TextBlock FontStyle="Italic" Style="{StaticResource Default_TextBlock_Style}" Text="Current data file path :"/>
-            <TextBlock Style="{StaticResource Default_TextBlock_Style}" Text="{Binding Source={StaticResource mMainViewModel}, Path=DataFilePath}"/>
+            <TextBlock FontStyle="Italic" Style="{StaticResource Default_TextBlock_Style}" Text="Modify the data file path :"/>
+            <TextBox Style="{StaticResource Default_TextBox_Style}" Text="{Binding Source={StaticResource mMainViewModel}, Path=DataFilePath, Mode=TwoWay}"/>
             <Separator/>
-            <TextBlock FontStyle="Italic" Style="{StaticResource Default_TextBlock_Style}" Text="Choose a new one :"/>
-            <Button Style="{StaticResource Default_Button_Style}" HorizontalAlignment="Left" Click="Click_Button_OpenFileChooser">
-                <TextBlock Style="{StaticResource ButtonContent_TextBlock_Style}" Text="Select a new file"/>
-            </Button>
+            <WrapPanel HorizontalAlignment="Right" Margin="0, 2, 20, 0">
+                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Click="Event_ClickSaveButton_ReturnNewValue">
+                    <TextBlock Style="{StaticResource ButtonContent_TextBlock_Style}" Text="Save" />
+                </Button>
+                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Click="Event_ClientCancelButton_ReturnOldValue">
+                    <TextBlock Style="{StaticResource ButtonContent_TextBlock_Style}" Text="Cancel"/>
+                 </Button>
+            </WrapPanel>
         </StackPanel>
     </Grid>
 </Window>

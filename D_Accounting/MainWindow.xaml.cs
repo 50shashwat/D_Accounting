@@ -89,11 +89,10 @@ namespace D_Accounting
             UpdateLayout();
         }
 
-        private void Click_MenuItem_DialogForChoosingDataFilePath(object sender, RoutedEventArgs e)
+        private void Event_ClickMenuItem_ChangeDataFilePathDialog(object sender, RoutedEventArgs e)
         {
-            WriteDataFilePathDialog dataFileDialog = new WriteDataFilePathDialog();
-
-            dataFileDialog.ShowDialog();
+            WriteDataFilePathDialog changeNamDialog = new WriteDataFilePathDialog(ViewModel.DataFilePath);
+            changeNamDialog.ShowDialog();
         }
     }
 }

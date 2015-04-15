@@ -16,10 +16,10 @@
                 <MenuItem Header="_New"/>
                 <MenuItem Header="_Load"/>
                 <MenuItem Header="_Save" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}"/>
-                <MenuItem Click="Click_MenuItem_DialogForChoosingDataFilePath">
+                <MenuItem Click="Event_ClickMenuItem_ChangeDataFilePathDialog">
                     <MenuItem.Header>
                         <StackPanel>
-                            <TextBlock Text="Modify save file"/>
+                            <TextBlock Text="Modify data file name and path"/>
                             <TextBlock Text="{Binding Source={StaticResource mMainViewModel}, Path=DataFilePath}"/>
                         </StackPanel>
                     </MenuItem.Header>

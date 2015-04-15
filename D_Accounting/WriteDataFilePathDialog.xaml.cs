@@ -19,21 +19,25 @@ namespace D_Accounting
     /// </summary>
     public partial class WriteDataFilePathDialog : Window
     {
-        public WriteDataFilePathDialog()
+        private string oldValue = null;
+
+        public WriteDataFilePathDialog(string initValue)
         {
             InitializeComponent();
+
+            oldValue = initValue;
         }
 
-        private void Click_Button_OpenFileChooser(object sender, RoutedEventArgs e)
+        private void Event_ClickSaveButton_ReturnNewValue(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog fileChooser = new Microsoft.Win32.OpenFileDialog();
+            Close();   
+        }
 
-            bool? result = fileChooser.ShowDialog(this);
+        private void Event_ClientCancelButton_ReturnOldValue(object sender, RoutedEventArgs e)
+        {
+            (App.Current.Resources["mMainViewModel"] as MainViewModel).DataFilePath = oldValue;
 
-            if (result == true)
-            {
-                (App.Current.Resources["mMainViewModel"] as MainViewModel).DataFilePath = new System.IO.FileInfo(fileChooser.FileName);
-            }
+            Close();
         }
     }
 }

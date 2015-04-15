@@ -96,15 +96,15 @@ namespace D_Accounting
         }
         private string mSelectedAccount;
 
-        public FileInfo DataFilePath
+        public string DataFilePath
         {
             get
             {
-                return mDataFilePath;
+                return mDataFilePath.ToString();
             }
             set
             {
-                mDataFilePath = value;
+                mDataFilePath = new FileInfo(value);
                 OnPropertyChanged("DataFilePath");
             }
         }
@@ -119,7 +119,7 @@ namespace D_Accounting
         {
             try
             {
-                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(DataFilePath);
+                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(mDataFilePath);
                 Cases = readParser.Read();
             }
             catch (Exception)
@@ -159,7 +159,7 @@ namespace D_Accounting
 
         private void Save()
         {
-            new ListCasesXmlWriterParser(DataFilePath).Write(Cases);
+            new ListCasesXmlWriterParser(mDataFilePath).Write(Cases);
         }
         #endregion // Save command
 

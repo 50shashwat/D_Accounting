@@ -24,7 +24,7 @@ namespace D_Accounting
         {
             get
             {
-                return DoneCommands.Count == 0 ? true : false;
+                return DoneCommands.Count == 0;
             }
         }
 
@@ -32,7 +32,7 @@ namespace D_Accounting
         {
             get
             {
-                return UndoneCommands.Count == 0 ? true : false;
+                return UndoneCommands.Count == 0;
             }
         }
 

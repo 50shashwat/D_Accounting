@@ -21,14 +21,17 @@ namespace D_Accounting
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Grid MainDataGrid { get; set; }
+        private MainViewModel ViewModel = null;
+
+        private Grid MainDataGrid = null;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            ViewModel = App.Current.Resources["mMainViewModel"] as MainViewModel;
             // References the close method of the View for the ViewModel
-            (Resources["mMainViewModel"] as MainViewModel).CloseAction = this.Close;
+            ViewModel.CloseAction = this.Close;
             // Updates the View when an item changed
             ((INotifyCollectionChanged)mItemsControl.Items).CollectionChanged += Event_ItemControl_CollectionChanged;
         }
@@ -55,7 +58,7 @@ namespace D_Accounting
         private void UpdateMainDataGridLayout()
         {
             Grid grid = MainDataGrid;
-            ListCases list = (Resources["mMainViewModel"] as MainViewModel).Cases;
+            ListCases list = ViewModel.Cases;
 
             if (grid == null || list == null)
                 return;
@@ -84,6 +87,13 @@ namespace D_Accounting
             }
 
             UpdateLayout();
+        }
+
+        private void Click_MenuItem_DialogForChoosingDataFilePath(object sender, RoutedEventArgs e)
+        {
+            WriteDataFilePathDialog dataFileDialog = new WriteDataFilePathDialog();
+
+            dataFileDialog.ShowDialog();
         }
     }
 }

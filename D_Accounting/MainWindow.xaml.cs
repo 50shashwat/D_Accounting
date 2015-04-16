@@ -91,7 +91,7 @@ namespace D_Accounting
 
         private void Event_ClickMenuItem_ChangeDataFilePathDialog(object sender, RoutedEventArgs e)
         {
-            WriteDataFilePathDialog changeNamDialog = new WriteDataFilePathDialog(ViewModel.DataFilePath);
+            ModifyDataFilePathDialog changeNamDialog = new ModifyDataFilePathDialog(ViewModel.DataFilePath);
             changeNamDialog.ShowDialog();
         }
     }

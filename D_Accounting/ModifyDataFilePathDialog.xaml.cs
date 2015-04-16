@@ -17,11 +17,11 @@ namespace D_Accounting
     /// <summary>
     /// Logique d'interaction pour WriteDataFilePathDialog.xaml
     /// </summary>
-    public partial class WriteDataFilePathDialog : Window
+    public partial class ModifyDataFilePathDialog : Window
     {
         private System.IO.FileInfo oldValue = null;
 
-        public WriteDataFilePathDialog(System.IO.FileInfo initValue)
+        public ModifyDataFilePathDialog(System.IO.FileInfo initValue)
         {
             InitializeComponent();
 

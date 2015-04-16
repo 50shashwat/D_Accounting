@@ -1,8 +1,7 @@
-*Pouvoir changer data file path and name - tester valeurs abérantes
-*Vous êtes sûr de vouloir fermer sans sauvegarder ? (asked : s'il y a eu des changements)
 *Sauvegarder les settings (path)
+*Vous êtes sûr de vouloir fermer sans sauvegarder ? (asked : s'il y a eu des changements)
+*Format date for operations (IValueConverter)
 *Delete operation button
-*Format date for operations
 *Sort table automatically by date (NO because => delete an operation(undo for example) = deleting the last one)
 *canExecute save just if something changed since last save
 *possibilité de sauvegarder Xml ou Binaire(?)

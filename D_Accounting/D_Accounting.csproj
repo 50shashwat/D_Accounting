@@ -54,9 +54,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppSettingsHandler.cs" />
+    <Compile Include="DateTimeToStringConverter.cs" />
     <Compile Include="ListCasesXmlReaderParser.cs" />
     <Compile Include="ListCasesXmlWriterParser.cs" />
-    <Compile Include="StringToFileInfoConverter.cs" />
+    <Compile Include="FileInfoToStringConverter.cs" />
     <Compile Include="UndoRedoControl.cs" />
     <Compile Include="ModifyDataFilePathDialog.xaml.cs">
       <DependentUpon>ModifyDataFilePathDialog.xaml</DependentUpon>

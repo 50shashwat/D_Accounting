@@ -69,6 +69,9 @@ namespace D_Accounting
             reader.ReadEndElement();
         }
 
+        /// <summary>
+        /// Writes the xml of the application settings
+        /// </summary>
         public void WriteXml()
         {
             XmlWriterSettings writerSettings = new XmlWriterSettings();
@@ -83,6 +86,10 @@ namespace D_Accounting
             }
         }
         
+        /// <summary>
+        /// Writes class content
+        /// </summary>
+        /// <param name="writer"></param>
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString(XmlSettingTags.DataFilePath, DataFilePath.ToString());

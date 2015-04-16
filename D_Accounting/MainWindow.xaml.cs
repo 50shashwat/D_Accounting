@@ -95,7 +95,7 @@ namespace D_Accounting
             bool? result = changeNamDialog.ShowDialog();
 
             if (result == true)
-                ViewModel.SaveSettings();
+                ViewModel.NewDataFilePath();
         }
     }
 }

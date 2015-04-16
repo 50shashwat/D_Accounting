@@ -1,10 +1,12 @@
 ﻿<Window x:Class="D_Accounting.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:D_Accounting"
         xmlns:model="clr-namespace:D_AccountingCore;assembly=D_AccountingCore"
         Title="D_Accounting" Height="600" Width="730">
     <Window.Resources>
         <CollectionViewSource x:Key="CasesView" Source="{Binding Source={StaticResource mMainViewModel}, Path=Cases}"/>
+        <local:DateTimeToStringConverter x:Key="dateTimeToStringConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding Source={StaticResource mMainViewModel}, Path=UndoCommand, Mode=OneWay}"/>
@@ -133,7 +135,7 @@
                                 </DataTemplate>
                                 <!-- Date case -->
                                 <DataTemplate DataType="{x:Type model:DateCase}">
-                                    <TextBox Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                    <TextBox Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource dateTimeToStringConverter}}"
                                              Style="{StaticResource Grid_TextBox_Style}"/>
                                 </DataTemplate>
                                 <!-- Description case -->

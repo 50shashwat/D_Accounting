@@ -1,6 +1,6 @@
 *Load menu button (load xml file (at data file path)) => ERROR handling ? How to display MVVM an error message
-*When new file path, ask if load file (if it's an existing file)
-*Ask : Are you sure you want to erase existing file ? (message box)
+*When new file path, ask if load file (if it's an existing file) => TODO is set (how to display MessageBox? in MVVM)
+*Ask : Are you sure you want to erase existing file ? (message box) => TODO is set (in void Save() procedure)
 *Vous êtes sûr de vouloir fermer sans sauvegarder ? (asked : s'il y a eu des changements)
 *Format date for operations (IValueConverter)
 *Enter button shortcut (ModifyDataFilePathDialog on Save button)

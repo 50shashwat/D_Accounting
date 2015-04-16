@@ -24,9 +24,14 @@ namespace D_Accounting
         }
         private AppSettingsHandler mSettings = new AppSettingsHandler();
 
-        public void SaveSettings()
+        public void NewDataFilePath()
         {
             mSettings.SaveSettings();
+            if (mSettings.DataFilePath.Exists)
+            {
+                // TODO DISPLAY MessageBox : Do you want to load the new data file ? (it exists !)
+            }
+
             OnPropertyChanged("LoadCommand");
         }
 
@@ -123,7 +128,7 @@ namespace D_Accounting
         {
             try
             {
-                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(Settings.DataFilePath);
+                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(mSettings.DataFilePath);
                 Cases = readParser.Read();
             }
             catch (Exception)
@@ -163,7 +168,12 @@ namespace D_Accounting
 
         private void Save()
         {
-            new ListCasesXmlWriterParser(Settings.DataFilePath).Write(Cases);
+            if (mSettings.DataFilePath.Exists)
+            {
+                // TODO : MessageBox : are you sure you want to erase content of the current data file?
+            }
+
+            new ListCasesXmlWriterParser(mSettings.DataFilePath).Write(Cases);
         }
         #endregion // Save command
 
@@ -234,7 +244,7 @@ namespace D_Accounting
         {
             get
             {
-                return Settings.DataFilePath.Exists;
+                return mSettings.DataFilePath.Exists;
             }
         }
 
@@ -243,7 +253,7 @@ namespace D_Accounting
             //DoCommand(...);
             try
             {
-                Cases = new ListCasesXmlReaderParser(Settings.DataFilePath).Read();
+                Cases = new ListCasesXmlReaderParser(mSettings.DataFilePath).Read();
                 OnPropertyChanged("Cases");
             }
             catch (XmlException)

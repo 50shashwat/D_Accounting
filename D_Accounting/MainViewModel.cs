@@ -96,15 +96,15 @@ namespace D_Accounting
         }
         private string mSelectedAccount;
 
-        public string DataFilePath
+        public FileInfo DataFilePath
         {
             get
             {
-                return mDataFilePath.ToString();
+                return mDataFilePath;
             }
             set
             {
-                mDataFilePath = new FileInfo(value);
+                mDataFilePath = value;
                 OnPropertyChanged("DataFilePath");
             }
         }

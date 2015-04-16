@@ -19,9 +19,9 @@ namespace D_Accounting
     /// </summary>
     public partial class WriteDataFilePathDialog : Window
     {
-        private string oldValue = null;
+        private System.IO.FileInfo oldValue = null;
 
-        public WriteDataFilePathDialog(string initValue)
+        public WriteDataFilePathDialog(System.IO.FileInfo initValue)
         {
             InitializeComponent();
 

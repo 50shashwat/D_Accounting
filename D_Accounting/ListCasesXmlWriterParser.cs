@@ -19,6 +19,7 @@ namespace D_Accounting
             filePath.Directory.Create();
 
             XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Encoding = Encoding.UTF8;
             settings.Indent = true;
 
             writer = XmlWriter.Create(filePath.ToString(), settings);

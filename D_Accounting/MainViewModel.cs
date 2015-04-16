@@ -6,11 +6,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml;
 
 namespace D_Accounting
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Application settings
+        /// </summary>
+        public AppSettingsHandler Settings
+        {
+            get
+            {
+                return mSettings;
+            }
+        }
+        private AppSettingsHandler mSettings = new AppSettingsHandler();
+
+        public void SaveSettings()
+        {
+            mSettings.SaveSettings();
+            OnPropertyChanged("LoadCommand");
+        }
+
         /// <summary>
         /// Close action of the main window
         /// </summary>
@@ -96,21 +115,6 @@ namespace D_Accounting
         }
         private string mSelectedAccount;
 
-        public FileInfo DataFilePath
-        {
-            get
-            {
-                return mDataFilePath;
-            }
-            set
-            {
-                mDataFilePath = value;
-                OnPropertyChanged("DataFilePath");
-            }
-        }
-        private FileInfo mDataFilePath = new FileInfo(String.Format("{0}\\data\\{1}",
-                                            Directory.GetParent(Directory.GetCurrentDirectory()).FullName,
-                                            "d_accounting_data.xml"));
 
         /// <summary>
         /// Default constructor of the main VM
@@ -119,7 +123,7 @@ namespace D_Accounting
         {
             try
             {
-                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(mDataFilePath);
+                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(Settings.DataFilePath);
                 Cases = readParser.Read();
             }
             catch (Exception)
@@ -159,7 +163,7 @@ namespace D_Accounting
 
         private void Save()
         {
-            new ListCasesXmlWriterParser(mDataFilePath).Write(Cases);
+            new ListCasesXmlWriterParser(Settings.DataFilePath).Write(Cases);
         }
         #endregion // Save command
 
@@ -214,6 +218,38 @@ namespace D_Accounting
         private void AddOperation()
         {
             DoCommand(new AddOperationCommand(this, Cases, mSelectedAccount));
+        }
+        #endregion
+
+        #region Load command
+        public ICommand LoadCommand
+        {
+            get
+            {
+                return new CommandHandler(Load, CanExecuteLoadCommand);
+            }
+        }
+
+        private bool CanExecuteLoadCommand
+        {
+            get
+            {
+                return Settings.DataFilePath.Exists;
+            }
+        }
+
+        private void Load()
+        {
+            //DoCommand(...);
+            try
+            {
+                Cases = new ListCasesXmlReaderParser(Settings.DataFilePath).Read();
+                OnPropertyChanged("Cases");
+            }
+            catch (XmlException)
+            {
+                // TODO : how to display (MVVM) an messagebox with the error ??
+            }
         }
         #endregion
 

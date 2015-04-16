@@ -12,7 +12,7 @@
         <StackPanel>
             <TextBlock FontStyle="Italic" Style="{StaticResource Default_TextBlock_Style}" Text="Modify the data file path :"/>
             <TextBox Style="{StaticResource Default_TextBox_Style}" Text="{Binding Source={StaticResource mMainViewModel},
-                Path=DataFilePath,
+                Path=Settings.DataFilePath,
                 Mode=TwoWay,
                 UpdateSourceTrigger=PropertyChanged,
                 Converter={StaticResource fileInfoToStringConverter}}"/>

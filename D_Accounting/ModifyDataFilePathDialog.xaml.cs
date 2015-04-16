@@ -30,13 +30,14 @@ namespace D_Accounting
 
         private void Event_ClickSaveButton_ReturnNewValue(object sender, RoutedEventArgs e)
         {
+            DialogResult = true;
             Close();   
         }
 
         private void Event_ClientCancelButton_ReturnOldValue(object sender, RoutedEventArgs e)
         {
-            (App.Current.Resources["mMainViewModel"] as MainViewModel).DataFilePath = oldValue;
-
+            (App.Current.Resources["mMainViewModel"] as MainViewModel).Settings.DataFilePath = oldValue;
+            DialogResult = false;
             Close();
         }
     }

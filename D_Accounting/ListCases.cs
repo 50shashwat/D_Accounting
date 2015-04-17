@@ -24,23 +24,26 @@ namespace D_Accounting
         /// </summary>
         private bool ModifyingColumns = false;
 
-        public ListCases()
+        public ListCases(bool createDefault = true)
         {
-            Add(new FixDescriptionCase() { Row = 0, Column = 0, Name = "Account name" });
+            if (createDefault)
+            {
+                Add(new FixDescriptionCase() { Row = 0, Column = 0, Name = "Account name" });
 
-            Add(new FixDescriptionCase() { Row = 1, Column = 0, Name = "Initial amount" });
-            Add(new FixDescriptionCase() { Row = 2, Column = 0, Name = "Real amount" });
-            Add(new FixDescriptionCase() { Row = 3, Column = 0, Name = "Theoretical amount" });
+                Add(new FixDescriptionCase() { Row = 1, Column = 0, Name = "Initial amount" });
+                Add(new FixDescriptionCase() { Row = 2, Column = 0, Name = "Real amount" });
+                Add(new FixDescriptionCase() { Row = 3, Column = 0, Name = "Theoretical amount" });
 
-            Add(new FixDescriptionCase() { Row = 0, Column = 1, Name = "OK?" });
-            Add(new FixDescriptionCase() { Row = 0, Column = 2, Name = "Description" });
+                Add(new FixDescriptionCase() { Row = 0, Column = 1, Name = "OK?" });
+                Add(new FixDescriptionCase() { Row = 0, Column = 2, Name = "Description" });
 
-            Add(new GrayUnaccessibleCase() { Row = 1, Column = 1 });
-            Add(new GrayUnaccessibleCase() { Row = 1, Column = 2 });
-            Add(new GrayUnaccessibleCase() { Row = 2, Column = 1 });
-            Add(new GrayUnaccessibleCase() { Row = 2, Column = 2 });
-            Add(new GrayUnaccessibleCase() { Row = 3, Column = 1 });
-            Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
+                Add(new GrayUnaccessibleCase() { Row = 1, Column = 1 });
+                Add(new GrayUnaccessibleCase() { Row = 1, Column = 2 });
+                Add(new GrayUnaccessibleCase() { Row = 2, Column = 1 });
+                Add(new GrayUnaccessibleCase() { Row = 2, Column = 2 });
+                Add(new GrayUnaccessibleCase() { Row = 3, Column = 1 });
+                Add(new GrayUnaccessibleCase() { Row = 3, Column = 2 });
+            }
         }
 
         public ListCases(XmlReader reader)
@@ -532,11 +535,18 @@ namespace D_Accounting
 
         public object Clone()
         {
-            ListCases newCases = new ListCases();
+            ListCases newCases = new ListCases(false);
             foreach (AbstractCase c in this)
                 newCases.Add(c.Clone() as AbstractCase);
 
             return newCases;
+        }
+
+        internal void CopyContent(ListCases sourceList)
+        {
+            ClearItems();
+            foreach(AbstractCase c in sourceList)
+                Add(c.Clone());
         }
     }
 }

@@ -8,24 +8,23 @@ namespace D_Accounting
 {
     public class LoadDataCommand : D_Command
     {
-        private System.IO.FileInfo DataFilePath = null;
-
         private ListCases OldCases = null;
+        private ListCases NewCases = null;
 
         public LoadDataCommand(MainViewModel vm, ListCases lc, System.IO.FileInfo dataFile) : base(vm, lc)
         {
-            DataFilePath = dataFile;
             OldCases = lc.Clone() as ListCases;
+            NewCases = new ListCasesXmlReaderParser(dataFile).Read();
         }
 
         public override void Execute()
         {
-            this.ListCases = new ListCasesXmlReaderParser(DataFilePath).Read();
+            this.ListCases.CopyContent(NewCases);
         }
 
         public override void ExecuteReverse()
         {
-            this.ListCases = OldCases.Clone() as ListCases;
+            this.ListCases.CopyContent(OldCases);
         }
     }
 }

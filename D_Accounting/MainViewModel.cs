@@ -157,7 +157,7 @@ namespace D_Accounting
         {
             // TODO : If something has been modified
             if (true)
-                MessageBox_Show(MessageBoxCloseAnswer, "Changes have been made.\nDo you want to save the changes before exiting?", "Save?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                MessageBox_Show(MessageBoxCloseAnswer, "Changes may have been made.\nDo you want to save the possible changes before exiting?", "Save?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
         }
         private void MessageBoxCloseAnswer(MessageBoxResult result)
         {
@@ -176,7 +176,7 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(Save); // CanSave if no changes have been made
+                return new CommandHandler(Save); // TODO CanSave if no changes have been made
             }
         }
 
@@ -185,6 +185,8 @@ namespace D_Accounting
             try
             {
                 new ListCasesXmlWriterParser(mSettings.DataFilePath).Write(Cases);
+                mSettings.DataFilePath = new FileInfo(mSettings.DataFilePath.FullName);
+                OnPropertyChanged("LoadCommand");
             }
             catch (Exception)
             {
@@ -268,13 +270,10 @@ namespace D_Accounting
         {
             try
             {
-                //DoCommand(new LoadDataCommand(this, Cases, mSettings.DataFilePath));
-                Cases = new ListCasesXmlReaderParser(mSettings.DataFilePath).Read();
-                OnPropertyChanged("Cases");
+                DoCommand(new LoadDataCommand(this, Cases, mSettings.DataFilePath));
             }
             catch (XmlException)
             {
-                // TODO : how to display (MVVM) an messagebox with the error ??
                 MessageBox_Show(null, "Error loading data file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
@@ -332,7 +331,7 @@ namespace D_Accounting
         #endregion // Commands
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(String propertyName)
+        private void OnPropertyChanged(String propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

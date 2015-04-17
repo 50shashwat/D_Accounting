@@ -58,6 +58,8 @@
     <Compile Include="ListCasesXmlReaderParser.cs" />
     <Compile Include="ListCasesXmlWriterParser.cs" />
     <Compile Include="FileInfoToStringConverter.cs" />
+    <Compile Include="LoadDataCommand.cs" />
+    <Compile Include="ShowMessageBoxEventArgs.cs" />
     <Compile Include="UndoRedoControl.cs" />
     <Compile Include="ModifyDataFilePathDialog.xaml.cs">
       <DependentUpon>ModifyDataFilePathDialog.xaml</DependentUpon>

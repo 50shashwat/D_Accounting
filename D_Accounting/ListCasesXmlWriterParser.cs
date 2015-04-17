@@ -22,7 +22,14 @@ namespace D_Accounting
             settings.Encoding = Encoding.UTF8;
             settings.Indent = true;
 
-            writer = XmlWriter.Create(filePath.ToString(), settings);
+            try
+            {
+                writer = XmlWriter.Create(filePath.ToString(), settings);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         internal void Write(ListCases cases)

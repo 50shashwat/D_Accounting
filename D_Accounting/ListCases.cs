@@ -17,7 +17,7 @@ namespace D_Accounting
     /// <summary>
     /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading a book)
     /// </summary>
-    public class ListCases : ObservableCollection<AbstractCase>, IXmlSerializable
+    public class ListCases : ObservableCollection<AbstractCase>, IXmlSerializable, ICloneable
     {
         /// <summary>
         /// If we are actually adding/deleting a column (do not call CaseChanged while modifiying the model)
@@ -528,6 +528,15 @@ namespace D_Accounting
                 c.WriteXml(writer);
                 writer.WriteEndElement();
             }
+        }
+
+        public object Clone()
+        {
+            ListCases newCases = new ListCases();
+            foreach (AbstractCase c in this)
+                newCases.Add(c.Clone() as AbstractCase);
+
+            return newCases;
         }
     }
 }

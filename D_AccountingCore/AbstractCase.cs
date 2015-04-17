@@ -141,5 +141,7 @@ namespace D_AccountingCore
             writer.WriteAttributeString(XmlTags.Row, Row.ToString());
             writer.WriteAttributeString(XmlTags.Column, Column.ToString());
         }
+
+        public abstract AbstractCase Clone();
     }
 }

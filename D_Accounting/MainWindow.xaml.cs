@@ -30,10 +30,20 @@ namespace D_Accounting
             InitializeComponent();
 
             ViewModel = App.Current.Resources["mMainViewModel"] as MainViewModel;
+
             // References the close method of the View for the ViewModel
             ViewModel.CloseAction = this.Close;
+
             // Updates the View when an item changed
             ((INotifyCollectionChanged)mItemsControl.Items).CollectionChanged += Event_ItemControl_CollectionChanged;
+
+            // Add message box request handler
+            ViewModel.MessageBoxRequest += new EventHandler<ShowMessageBoxEventArgs>(Event_ViewModel_MessageBoxRequest);
+        }
+
+        private void Event_ViewModel_MessageBoxRequest(object sender, ShowMessageBoxEventArgs e)
+        {
+            e.Show();
         }
 
         /// <summary>

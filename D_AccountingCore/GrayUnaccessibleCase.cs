@@ -27,5 +27,13 @@ namespace D_AccountingCore
         {
             base.WriteXml(writer);
         }
+
+        public override AbstractCase Clone()
+        {
+            GrayUnaccessibleCase c = new GrayUnaccessibleCase();
+            c.Column = Column;
+            c.Row = Row;
+            return c;
+        }
     }
 }

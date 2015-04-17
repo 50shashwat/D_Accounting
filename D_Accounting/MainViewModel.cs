@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 
@@ -28,11 +29,15 @@ namespace D_Accounting
         {
             mSettings.SaveSettings();
             if (mSettings.DataFilePath.Exists)
-            {
-                // TODO DISPLAY MessageBox : Do you want to load the new data file ? (it exists !)
-            }
+                MessageBox_Show(LoadNewDataFileAnswer, "Do you want to load the new data file?", "Load?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
 
             OnPropertyChanged("LoadCommand");
+        }
+
+        private void LoadNewDataFileAnswer(MessageBoxResult result)
+        {
+            if (result == MessageBoxResult.Yes)
+                Load();
         }
 
         /// <summary>
@@ -144,14 +149,24 @@ namespace D_Accounting
         {
             get
             {
-                return mCloseCommand ?? (mCloseCommand = new CommandHandler(Close));
+                return new CommandHandler(Close);
             }
         }
-        private ICommand mCloseCommand;
 
         private void Close()
         {
-            // Ask if save...
+            // TODO : If something has been modified
+            if (true)
+                MessageBox_Show(MessageBoxCloseAnswer, "Changes have been made.\nDo you want to save the changes before exiting?", "Save?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+        }
+        private void MessageBoxCloseAnswer(MessageBoxResult result)
+        {
+            if (result == MessageBoxResult.Cancel)
+                return;
+
+            if (result == MessageBoxResult.Yes)
+                Save();
+
             CloseAction();
         }
         #endregion // Close command
@@ -161,19 +176,20 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(Save);
+                return new CommandHandler(Save); // CanSave if no changes have been made
             }
         }
-        private ICommand mSaveCommand;
 
         private void Save()
         {
-            if (mSettings.DataFilePath.Exists)
+            try
             {
-                // TODO : MessageBox : are you sure you want to erase content of the current data file?
+                new ListCasesXmlWriterParser(mSettings.DataFilePath).Write(Cases);
             }
-
-            new ListCasesXmlWriterParser(mSettings.DataFilePath).Write(Cases);
+            catch (Exception)
+            {
+                MessageBox_Show(null, "Could not save file at " + mSettings.DataFilePath + ".", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+            }
         }
         #endregion // Save command
 
@@ -186,7 +202,7 @@ namespace D_Accounting
             }
         }
 
-        private bool CanExecuteAddAccount { get; set; }
+        private bool CanExecuteAddAccount;
 
         private void AddAccount()
         {
@@ -204,7 +220,7 @@ namespace D_Accounting
             }
         }
 
-        private bool CanExecuteRemoveAccount { get; set; }
+        private bool CanExecuteRemoveAccount;
 
         private void RemoveAccount()
         {
@@ -250,15 +266,16 @@ namespace D_Accounting
 
         private void Load()
         {
-            //DoCommand(...);
             try
             {
+                //DoCommand(new LoadDataCommand(this, Cases, mSettings.DataFilePath));
                 Cases = new ListCasesXmlReaderParser(mSettings.DataFilePath).Read();
                 OnPropertyChanged("Cases");
             }
             catch (XmlException)
             {
                 // TODO : how to display (MVVM) an messagebox with the error ??
+                MessageBox_Show(null, "Error loading data file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
         #endregion
@@ -319,6 +336,15 @@ namespace D_Accounting
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event EventHandler<ShowMessageBoxEventArgs> MessageBoxRequest;
+        protected void MessageBox_Show(Action<MessageBoxResult> resultAction, string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
+        {
+            if (this.MessageBoxRequest != null)
+            {
+                this.MessageBoxRequest(this, new ShowMessageBoxEventArgs(resultAction, messageBoxText, caption, button, icon, defaultResult, options));
+            }
         }
     }
 }

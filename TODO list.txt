@@ -1,6 +1,4 @@
 *Vous êtes sûr de vouloir fermer sans sauvegarder ? (asked : s'il y a eu des changements) + CanExecuteSaveCommand
-*Load command (Undoable)
-*Enter button shortcut (ModifyDataFilePathDialog on Save button)
 *Delete operation button
 *Sort table automatically by date (NO because => delete an operation(undo for example) = deleting the last one)
 *possibilité de sauvegarder Xml ou Binaire(?)

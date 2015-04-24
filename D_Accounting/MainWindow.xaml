@@ -22,7 +22,7 @@
                     <MenuItem.Header>
                         <StackPanel>
                             <TextBlock Text="Modify current data file name and path"/>
-                            <TextBlock Text="{Binding Source={StaticResource mMainViewModel}, Path=Settings.DataFilePath}"/>
+                            <TextBlock Text="{Binding Source={StaticResource mMainViewModel}, Path=Settings.DataFilePath, Mode=OneWay}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>

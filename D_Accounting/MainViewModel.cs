@@ -25,13 +25,18 @@ namespace D_Accounting
         }
         private AppSettingsHandler mSettings = new AppSettingsHandler();
 
-        public void NewDataFilePath()
+        public void UpdateDataFilePath(bool saveNewDataPath)
         {
-            mSettings.SaveSettings();
-            if (mSettings.DataFilePath.Exists)
-                MessageBox_Show(LoadNewDataFileAnswer, "Do you want to load the new data file?", "Load?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+            if (saveNewDataPath)
+            {
+                mSettings.SaveSettings();
+                if (mSettings.DataFilePath.Exists)
+                    MessageBox_Show(LoadNewDataFileAnswer, "Do you want to load the new data file?", "Load?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
 
-            OnPropertyChanged("LoadCommand");
+                OnPropertyChanged("LoadCommand");
+            }
+            else
+                OnPropertyChanged("Settings");
         }
 
         private void LoadNewDataFileAnswer(MessageBoxResult result)

@@ -3,7 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:D_Accounting"
-        Title="Choose new data file path" Height="130" Width="700">
+        Title="Choose new data file path" Height="130" Width="700"
+        FocusManager.FocusedElement="{Binding ElementName=mTextBox_FilePath}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Closing="Event_Closing">
     <Window.Resources>
         <local:FileInfoToStringConverter x:Key="fileInfoToStringConverter"/>
         <system:Double x:Key="buttonSize">60</system:Double>
@@ -11,17 +14,24 @@
     <Grid>
         <StackPanel>
             <TextBlock FontStyle="Italic" Style="{StaticResource Default_TextBlock_Style}" Text="Modify the data file path :"/>
-            <TextBox Style="{StaticResource Default_TextBox_Style}" Text="{Binding Source={StaticResource mMainViewModel},
-                Path=Settings.DataFilePath,
-                Mode=TwoWay,
-                UpdateSourceTrigger=PropertyChanged,
-                Converter={StaticResource fileInfoToStringConverter}}"/>
+            <TextBox Style="{StaticResource Default_TextBox_Style}"
+                     Text="{Binding Source={StaticResource mMainViewModel},
+                        Path=Settings.DataFilePath,
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged,
+                        Converter={StaticResource fileInfoToStringConverter}}"
+                     Name="mTextBox_FilePath"
+                     GotFocus="Event_TextBox_FilePath_GotFocus">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SavePathCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
             <Separator/>
             <WrapPanel HorizontalAlignment="Right" Margin="0, 2, 20, 0">
-                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Click="Event_ClickSaveButton_ReturnNewValue">
+                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Command="{Binding SavePathCommand}">
                     <TextBlock Style="{StaticResource ButtonContent_TextBlock_Style}" Text="Save" />
                 </Button>
-                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Click="Event_ClientCancelButton_ReturnOldValue">
+                <Button Style="{StaticResource Default_Button_Style}" Width="{StaticResource buttonSize}" Command="{Binding CancelCommand}">
                     <TextBlock Style="{StaticResource ButtonContent_TextBlock_Style}" Text="Cancel"/>
                  </Button>
             </WrapPanel>

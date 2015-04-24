@@ -21,7 +21,7 @@ namespace D_Accounting
             {
                 return new FileInfo(value.ToString());
             }
-            catch (ArgumentException e)
+            catch (Exception e)
             {
                 return new System.Windows.Controls.ValidationResult(false, e);
             }

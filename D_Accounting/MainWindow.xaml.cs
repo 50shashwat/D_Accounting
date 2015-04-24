@@ -104,8 +104,7 @@ namespace D_Accounting
             ModifyDataFilePathDialog changeNamDialog = new ModifyDataFilePathDialog(ViewModel.Settings.DataFilePath);
             bool? result = changeNamDialog.ShowDialog();
 
-            if (result == true)
-                ViewModel.NewDataFilePath();
+            ViewModel.UpdateDataFilePath(result.HasValue ? result.Value : false);
         }
     }
 }

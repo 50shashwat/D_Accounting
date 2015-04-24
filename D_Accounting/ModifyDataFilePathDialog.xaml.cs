@@ -28,17 +28,43 @@ namespace D_Accounting
             oldValue = initValue;
         }
 
-        private void Event_ClickSaveButton_ReturnNewValue(object sender, RoutedEventArgs e)
+        public CommandHandler SavePathCommand
         {
-            DialogResult = true;
-            Close();   
+            get
+            {
+                return new CommandHandler(delegate()
+                    {
+                        SetDialogResultAndClose(true);
+                    });
+            }
         }
 
-        private void Event_ClientCancelButton_ReturnOldValue(object sender, RoutedEventArgs e)
+        public CommandHandler CancelCommand
         {
-            (App.Current.Resources["mMainViewModel"] as MainViewModel).Settings.DataFilePath = oldValue;
-            DialogResult = false;
+            get
+            {
+                return new CommandHandler(delegate()
+                    {
+                        SetDialogResultAndClose(false);
+                    });
+            }
+        }
+
+        private void SetDialogResultAndClose(bool result)
+        {
+            DialogResult = result;
             Close();
+        }
+
+        private void Event_TextBox_FilePath_GotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as TextBox).CaretIndex = (sender as TextBox).Text.Length;
+        }
+
+        private void Event_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DialogResult.HasValue || !DialogResult.Value)
+                (App.Current.Resources["mMainViewModel"] as MainViewModel).Settings.DataFilePath = oldValue;
         }
     }
 }

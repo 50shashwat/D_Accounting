@@ -284,6 +284,22 @@ namespace D_Accounting
         }
         #endregion
 
+        #region New command
+        public ICommand NewCommand
+        {
+            get
+            {
+                return new CommandHandler(New);
+            }
+        }
+
+        private void New()
+        {
+            // TODO : Ask if sure want to lose unsaved changes ????
+            DoCommand(new NewDataCommand(this, Cases));
+        }
+        #endregion
+
         #region UndoRedo commands
         /// <summary>
         /// Undo command

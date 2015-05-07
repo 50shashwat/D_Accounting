@@ -1,6 +1,6 @@
 *Vous êtes sûr de vouloir fermer sans sauvegarder ? (asked : s'il y a eu des changements) + CanExecuteSaveCommand
 *Delete operation button
-*Sort table automatically by date (NO because => delete an operation(undo for example) = deleting the last one)
+*Sort table automatically by date (NO because => undo an operation = deleting the last one)
 *possibilité de sauvegarder Xml ou Binaire(?)
 *Menu bar (undo/redo + save + change default load file name + new operation+new account + delete account)
 	- New : tout à 0

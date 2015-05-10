@@ -80,8 +80,13 @@ namespace D_Accounting
             int columnNumber = list.ColumnCount;
 
             // Add rows
-            for (int i = 0; i < rowNumber; ++i)
-                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            Parallel.For(0, rowNumber, delegate(int i)
+            {
+                Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+                    }));
+            });
 
             // Add columns
             for (int i = 0; i < columnNumber; ++i)

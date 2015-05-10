@@ -65,12 +65,13 @@ namespace D_Accounting
                 int nbRow = 0;
                 List<int> countedRows = new List<int>();
                 foreach (AbstractCase c in this)
+                {
                     if (!countedRows.Contains(c.Row))
                     {
                         ++nbRow;
                         countedRows.Add(c.Row);
                     }
-
+                }
                 return nbRow;
             }
         }
@@ -157,8 +158,10 @@ namespace D_Accounting
             int addedColumnIndex = oldColCount - 2;
 
             // Move to the right
-            foreach (AbstractCase c in this.Where(c => c.Column >= oldColCount - 2))
-                c.Column++;
+            Parallel.ForEach<AbstractCase>(this.Where(c => c.Column >= oldColCount - 2), new Action<AbstractCase>((AbstractCase c) =>
+                {
+                    c.Column++;
+                }));
 
             // Title case
             Add(new FixDescriptionCase() { Row = 0, Column = addedColumnIndex, Name = newAccountName });
@@ -169,6 +172,7 @@ namespace D_Accounting
             // Full & empty oprations
             for (int i = 2; i < RowCount - 2; ++i)
                 Add(new GrayUnaccessibleCase() { Row = i, Column = addedColumnIndex });
+            
 
             // Real & theoretical amount
             Add(new ReadonlyAmountCase() { Row = RowCount - 2, Column = addedColumnIndex, Amount = 0.0M });
@@ -534,6 +538,7 @@ namespace D_Accounting
         {
             ListCases newCases = new ListCases();
             newCases.ClearItems();
+
             foreach (AbstractCase c in this)
                 newCases.Add(c.Clone() as AbstractCase);
 

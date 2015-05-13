@@ -89,18 +89,10 @@ namespace D_Accounting
             });
 
             // Add columns
-            for (int i = 0; i < columnNumber; ++i)
-            {
-                ColumnDefinition colDef = new ColumnDefinition();
-
-                if (i == columnNumber - 1)
-                    colDef.Width = new GridLength(1, GridUnitType.Star);
-                else
-                    colDef.Width = new GridLength(1, GridUnitType.Auto);
-
-                grid.ColumnDefinitions.Add(colDef);
-            }
-
+            for (int i = 0; i < columnNumber - 1; ++i)
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            
             UpdateLayout();
         }
 

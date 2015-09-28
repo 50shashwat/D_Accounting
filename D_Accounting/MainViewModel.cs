@@ -25,9 +25,17 @@ namespace D_Accounting
         /// </summary>
         public ListCases Cases
         {
-            get;
-            private set;
+            get
+            {
+                return mCases;
+            }
+            internal set
+            {
+                mCases = value;
+                OnPropertyChanged("Cases");
+            }
         }
+        private ListCases mCases;
 
         /// <summary>
         /// The undo-redo controller
@@ -55,12 +63,12 @@ namespace D_Accounting
                 }
                 else
                 {
-                    if (Cases.AccountNames.Contains(mWrittenAccount))
+                    if (mCases.AccountNames.Contains(mWrittenAccount))
                     {
                         CanExecuteAddAccount = false;
                         CanExecuteRemoveAccount = true;
                     }
-                    else if (Cases.ColumnTitles.Contains(mWrittenAccount))
+                    else if (mCases.ColumnTitles.Contains(mWrittenAccount))
                     {
                         CanExecuteAddAccount = false;
                         CanExecuteRemoveAccount = false;
@@ -87,7 +95,7 @@ namespace D_Accounting
                 mSelectedAccount = value;
                 OnPropertyChanged("SelectedAccount");
 
-                if (mSelectedAccount == null || !Cases.AccountNames.Contains(mSelectedAccount))
+                if (mSelectedAccount == null || !mCases.AccountNames.Contains(mSelectedAccount))
                     CanExecuteAddOperation = false;
                 else
                     CanExecuteAddOperation = true;
@@ -108,9 +116,9 @@ namespace D_Accounting
                 OnPropertyChanged("DataFilePath");
             }
         }
-        private FileInfo mDataFilePath = new FileInfo(String.Format("{0}\\data\\{1}",
-                                            Directory.GetParent(Directory.GetCurrentDirectory()).FullName,
-                                            "d_accounting_data.xml"));
+        private FileInfo mDataFilePath = new FileInfo(Path.Combine(
+                                                        Directory.GetCurrentDirectory(),
+                                                        "d_accounting_data.xml"));
 
         /// <summary>
         /// Default constructor of the main VM
@@ -120,11 +128,11 @@ namespace D_Accounting
             try
             {
                 ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(DataFilePath);
-                Cases = readParser.Read();
+                mCases = readParser.Read();
             }
             catch (Exception)
             {
-                Cases = new ListCases();
+                mCases = new ListCases();
             }
         }
 
@@ -147,6 +155,21 @@ namespace D_Accounting
         }
         #endregion // Close command
 
+        #region Menu bar commands
+        public ICommand NewCommand
+        {
+            get
+            {
+                return new CommandHandler(New);
+            }
+        }
+
+        private void New()
+        {
+            DoCommand(new NewCommand(this, mCases));
+        }
+        #endregion
+
         #region Save command
         public ICommand SaveCommand
         {
@@ -155,11 +178,10 @@ namespace D_Accounting
                 return new CommandHandler(Save);
             }
         }
-        private ICommand mSaveCommand;
 
         private void Save()
         {
-            new ListCasesXmlWriterParser(DataFilePath).Write(Cases);
+            new ListCasesXmlWriterParser(DataFilePath).Write(mCases);
         }
         #endregion // Save command
 
@@ -176,7 +198,7 @@ namespace D_Accounting
 
         private void AddAccount()
         {
-            DoCommand(new AddAccountCommand(this, Cases, mWrittenAccount));
+            DoCommand(new AddAccountCommand(this, mCases, mWrittenAccount));
             WrittenAccount = "";
         }
         #endregion // Add account command
@@ -194,7 +216,7 @@ namespace D_Accounting
 
         private void RemoveAccount()
         {
-            DoCommand(new DeleteAccountCommand(this, Cases, mWrittenAccount));
+            DoCommand(new DeleteAccountCommand(this, mCases, mWrittenAccount));
             WrittenAccount = "";
         }
 
@@ -213,7 +235,7 @@ namespace D_Accounting
 
         private void AddOperation()
         {
-            DoCommand(new AddOperationCommand(this, Cases, mSelectedAccount));
+            DoCommand(new AddOperationCommand(this, mCases, mSelectedAccount));
         }
         #endregion
 

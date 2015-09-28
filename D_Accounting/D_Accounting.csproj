@@ -55,6 +55,7 @@
     </ApplicationDefinition>
     <Compile Include="ListCasesXmlReaderParser.cs" />
     <Compile Include="ListCasesXmlWriterParser.cs" />
+    <Compile Include="NewCommand.cs" />
     <Compile Include="UndoRedoControl.cs" />
     <Compile Include="WriteDataFilePathDialog.xaml.cs">
       <DependentUpon>WriteDataFilePathDialog.xaml</DependentUpon>

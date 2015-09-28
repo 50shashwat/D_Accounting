@@ -13,7 +13,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_New"/>
+                <MenuItem Header="_New" Command="{Binding Source={StaticResource mMainViewModel}, Path=NewCommand}"/>
                 <MenuItem Header="_Load"/>
                 <MenuItem Header="_Save" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}"/>
                 <MenuItem Click="Click_MenuItem_DialogForChoosingDataFilePath">

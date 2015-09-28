@@ -10,19 +10,19 @@ namespace D_Accounting
     {
         private string AccountName;
 
-        public DeleteAccountCommand(MainViewModel vm, ListCases lc, string accountName) : base(vm, lc)
+        public DeleteAccountCommand(MainViewModel vm, string accountName) : base(vm)
         {
             AccountName = accountName;
         }
 
         public override void Execute()
         {
-            this.ListCases.RemoveAccount(AccountName);
+            ViewModel.Cases.RemoveAccount(AccountName);
         }
 
         public override void ExecuteReverse()
         {
-            this.ListCases.AddAccount(AccountName);
+            ViewModel.Cases.AddAccount(AccountName);
         }
     }
 }

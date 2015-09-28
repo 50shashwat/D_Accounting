@@ -167,7 +167,7 @@ namespace D_Accounting
 
         private void New()
         {
-            DoCommand(new NewCommand(this, mCases));
+            DoCommand(new NewCommand(this));
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace D_Accounting
             ListCasesXmlReaderParser fileParser = new ListCasesXmlReaderParser(new FileInfo(filePath));
             ListCases loadedFileData = fileParser.Read();
 
-            DoCommand(new LoadCommand(this, Cases, filePath, loadedFileData));
+            DoCommand(new LoadCommand(this, filePath, loadedFileData));
         }
 
         public void SaveAs(string fileName)
@@ -218,7 +218,7 @@ namespace D_Accounting
 
         private void AddAccount()
         {
-            DoCommand(new AddAccountCommand(this, mCases, mWrittenAccount));
+            DoCommand(new AddAccountCommand(this, mWrittenAccount));
             WrittenAccount = "";
         }
         #endregion // Add account command
@@ -236,7 +236,7 @@ namespace D_Accounting
 
         private void RemoveAccount()
         {
-            DoCommand(new DeleteAccountCommand(this, mCases, mWrittenAccount));
+            DoCommand(new DeleteAccountCommand(this, mWrittenAccount));
             WrittenAccount = "";
         }
 
@@ -255,7 +255,7 @@ namespace D_Accounting
 
         private void AddOperation()
         {
-            DoCommand(new AddOperationCommand(this, mCases, mSelectedAccount));
+            DoCommand(new AddOperationCommand(this, mSelectedAccount));
         }
         #endregion
 

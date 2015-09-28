@@ -10,12 +10,9 @@ namespace D_Accounting
     {
         protected MainViewModel ViewModel;
 
-        protected ListCases ListCases;
-
-        public D_Command(MainViewModel vm, ListCases lc)
+        public D_Command(MainViewModel vm)
         {
             ViewModel = vm;
-            ListCases = lc;
         }
 
         public abstract void Execute();

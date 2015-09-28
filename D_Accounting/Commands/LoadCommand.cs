@@ -21,9 +21,9 @@ namespace D_Accounting.Commands
         /// <param name="vm"></param>
         /// <param name="lc"></param>
         /// <param name="newCases"></param>
-        public LoadCommand(MainViewModel vm, ListCases lc, string newFilePath, ListCases newCases) : base(vm, lc)
+        public LoadCommand(MainViewModel vm, string newFilePath, ListCases newCases) : base(vm)
         {
-            OldCases = lc;
+            OldCases = vm.Cases;
             OldFilePath = vm.DataFilePath;
 
             NewCases = newCases;

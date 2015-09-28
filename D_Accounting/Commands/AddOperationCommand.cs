@@ -10,19 +10,19 @@ namespace D_Accounting
     {
         private string SelectedAcccount;
 
-        public AddOperationCommand(MainViewModel vm, ListCases lc, string selectedAccount) : base(vm, lc)
+        public AddOperationCommand(MainViewModel vm, string selectedAccount) : base(vm)
         {
             SelectedAcccount = selectedAccount;
         }
 
         public override void Execute()
         {
-            this.ListCases.AddOperation(SelectedAcccount);
+            ViewModel.Cases.AddOperation(SelectedAcccount);
         }
 
         public override void ExecuteReverse()
         {
-            this.ListCases.DeleteOperation(SelectedAcccount);
+            ViewModel.Cases.DeleteOperation(SelectedAcccount);
         }
     }
 }

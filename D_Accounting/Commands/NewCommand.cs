@@ -10,9 +10,9 @@ namespace D_Accounting
     {
         private ListCases OldList = null;
         
-        public NewCommand(MainViewModel vm, ListCases lc) : base(vm, lc)
+        public NewCommand(MainViewModel vm) : base(vm)
         {
-            OldList = lc;
+            OldList = ViewModel.Cases;
         }
 
         public override void Execute()

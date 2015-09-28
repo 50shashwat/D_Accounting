@@ -30,6 +30,8 @@ Each operation has a date (by default now), the amount, a description and a bool
 
 The ending rows of the table *Real amount* and *Theoretical amount* represent respectively the amount on your account as your bank sees it and the amount that soon will noticed by your bank.
 
+All cases are real-time updated (and all impacted fields around it), except the date case, where you need to click somewhere else to check its correctness.
+
 #### Undo/Redo
 
 This application has a undo/redo mechanism. It can be used with the menu bar commands in the *Command* section, or with the usual shortcuts *Ctrl+Z* and *Ctrl+Y*.
@@ -56,6 +58,7 @@ The application is entirely coded in C#, using WPF (and so XAML files for the vi
 
 Still, a project is never finished. A lot of things can be done. For example :
 
+* A better date display
 * Not be able to save when nothing has changed.
 * Be able to rename and to move an account.
 * Connect the application to your bank. (but this will never happen I guess)

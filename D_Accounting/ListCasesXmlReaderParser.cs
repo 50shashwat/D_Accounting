@@ -34,20 +34,19 @@ namespace D_Accounting
             }
         }
 
-        internal bool FileExists
-        {
-            get
-            {
-                return true; // TODO (error ?)
-            }
-        }
-
         internal ListCases Read()
         {
-            ListCases c = new ListCases(reader);
-            reader.Close();
+            try
+            {
+                ListCases c = new ListCases(reader);
+                reader.Close();
 
-            return c;
+                return c;
+            }
+            catch (XmlException e)
+            {
+                throw e;
+            }
         }
 
     }

@@ -43,5 +43,14 @@ namespace D_AccountingCore
             base.WriteXml(writer);
             writer.WriteElementString(XmlTags.Okay, IsOkay.ToString());
         }
+
+        public override AbstractCase Clone()
+        {
+            OkayCase c = new OkayCase();
+            c.IsOkay = IsOkay;
+            c.Column = Column;
+            c.Row = Row;
+            return c;
+        }
     }
 }

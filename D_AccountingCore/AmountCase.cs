@@ -49,5 +49,14 @@ namespace D_AccountingCore
             base.WriteXml(writer);
             writer.WriteElementString(XmlTags.Amount, Amount.ToString(new CultureInfo("en-US")));
         }
+
+        public override AbstractCase Clone()
+        {
+            AmountCase c = new AmountCase();
+            c.Amount = Amount;
+            c.Column = Column;
+            c.Row = Row;
+            return c;
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace D_Accounting.Commands
         public LoadCommand(MainViewModel vm, string newFilePath, ListCases newCases) : base(vm)
         {
             OldCases = vm.Cases;
-            OldFilePath = vm.DataFilePath;
+            OldFilePath = vm.Settings.DataFilePath;
 
             NewCases = newCases;
             NewFilePath = new FileInfo(newFilePath);
@@ -28,13 +28,13 @@ namespace D_Accounting.Commands
         public override void Execute()
         {
             ViewModel.Cases = NewCases;
-            ViewModel.DataFilePath = NewFilePath;
+            ViewModel.Settings.DataFilePath = NewFilePath;
         }
 
         public override void ExecuteReverse()
         {
             ViewModel.Cases = OldCases;
-            ViewModel.DataFilePath = OldFilePath;
+            ViewModel.Settings.DataFilePath = OldFilePath;
         }
     }
 }

@@ -41,5 +41,14 @@ namespace D_AccountingCore
             base.WriteXml(writer);
             writer.WriteElementString(XmlTags.Description, Name);
         }
+
+        public override AbstractCase Clone()
+        {
+            FixDescriptionCase c = new FixDescriptionCase();
+            c.Name = Name;
+            c.Column = Column;
+            c.Row = Row;
+            return c;
+        }
     }
 }

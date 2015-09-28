@@ -41,5 +41,14 @@ namespace D_AccountingCore
             base.WriteXml(writer);
             writer.WriteElementString(XmlTags.Date, Date.ToString("yyyy-MM-ddTHH:mm:ss"));
         }
+
+        public override AbstractCase Clone()
+        {
+            DateCase c = new DateCase();
+            c.Date = Date;
+            c.Column = Column;
+            c.Row = Row;
+            return c;
+        }
     }
 }

@@ -58,8 +58,8 @@ The application is entirely coded in C#, using WPF (and so XAML files for the vi
 
 Still, a project is never finished. A lot of things can be done. For example :
 
-* A better date display
-* Not be able to save when nothing has changed.
+* An icon
+* Not be able to save (and don't notice when closing app) when nothing has changed.
 * Be able to rename and to move an account.
 * Connect the application to your bank. (but this will never happen I guess)
 * And so on...

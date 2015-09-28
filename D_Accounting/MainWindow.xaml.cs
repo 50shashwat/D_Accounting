@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,10 +21,20 @@ namespace D_Accounting
             InitializeComponent();
 
             ViewModel = App.Current.Resources["mMainViewModel"] as MainViewModel;
+
             // References the close method of the View for the ViewModel
             ViewModel.CloseAction = this.Close;
+
             // Updates the View when an item changed
             ((INotifyCollectionChanged)mItemsControl.Items).CollectionChanged += Event_ItemControl_CollectionChanged;
+
+            // Add message box request handler
+            ViewModel.MessageBoxRequest += new EventHandler<ShowMessageBoxEventArgs>(Event_ViewModel_MessageBoxRequest);
+        }
+
+        private void Event_ViewModel_MessageBoxRequest(object sender, ShowMessageBoxEventArgs e)
+        {
+            e.Show();
         }
 
         /// <summary>
@@ -60,22 +71,19 @@ namespace D_Accounting
             int columnNumber = list.ColumnCount;
 
             // Add rows
-            for (int i = 0; i < rowNumber; ++i)
-                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            Parallel.For(0, rowNumber, delegate(int i)
+            {
+                Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+                    }));
+            });
 
             // Add columns
-            for (int i = 0; i < columnNumber; ++i)
-            {
-                ColumnDefinition colDef = new ColumnDefinition();
-
-                if (i == columnNumber - 1)
-                    colDef.Width = new GridLength(1, GridUnitType.Star);
-                else
-                    colDef.Width = new GridLength(1, GridUnitType.Auto);
-
-                grid.ColumnDefinitions.Add(colDef);
-            }
-
+            for (int i = 0; i < columnNumber - 1; ++i)
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            
             UpdateLayout();
         }
 

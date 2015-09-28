@@ -9,13 +9,14 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using D_AccountingCore;
+using System.Threading.Tasks;
 
 namespace D_Accounting
 {
     /// <summary>
     /// Drescribes the data grid : case by case from the left to the right, than the next row (like reading a book)
     /// </summary>
-    public class ListCases : ObservableCollection<AbstractCase>, IXmlSerializable
+    public class ListCases : ObservableCollection<AbstractCase>, IXmlSerializable, ICloneable
     {
         /// <summary>
         /// If we are actually adding/deleting a column (do not call CaseChanged while modifiying the model)
@@ -43,7 +44,14 @@ namespace D_Accounting
 
         public ListCases(XmlReader reader)
         {
-            ReadXml(reader);
+            try
+            {
+                ReadXml(reader);
+            }
+            catch(XmlException e)
+            {
+                throw e;
+            }
         }
     
         /// <summary>
@@ -56,12 +64,13 @@ namespace D_Accounting
                 int nbRow = 0;
                 List<int> countedRows = new List<int>();
                 foreach (AbstractCase c in this)
+                {
                     if (!countedRows.Contains(c.Row))
                     {
                         ++nbRow;
                         countedRows.Add(c.Row);
                     }
-
+                }
                 return nbRow;
             }
         }
@@ -148,8 +157,10 @@ namespace D_Accounting
             int addedColumnIndex = oldColCount - 2;
 
             // Move to the right
-            foreach (AbstractCase c in this.Where(c => c.Column >= oldColCount - 2))
-                c.Column++;
+            Parallel.ForEach<AbstractCase>(this.Where(c => c.Column >= oldColCount - 2), new Action<AbstractCase>((AbstractCase c) =>
+                {
+                    c.Column++;
+                }));
 
             // Title case
             Add(new FixDescriptionCase() { Row = 0, Column = addedColumnIndex, Name = newAccountName });
@@ -160,6 +171,7 @@ namespace D_Accounting
             // Full & empty oprations
             for (int i = 2; i < RowCount - 2; ++i)
                 Add(new GrayUnaccessibleCase() { Row = i, Column = addedColumnIndex });
+            
 
             // Real & theoretical amount
             Add(new ReadonlyAmountCase() { Row = RowCount - 2, Column = addedColumnIndex, Amount = 0.0M });
@@ -460,43 +472,55 @@ namespace D_Accounting
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <exception cref="XmlException.XmlException">Not parsing an xml file</exception>
         public void ReadXml(XmlReader reader)
         {
-            reader.ReadStartElement(XmlTags.ListCases);
-
-            while (reader.NodeType != XmlNodeType.EndElement)
+            try
             {
-                AbstractCase c = null;
-                switch (reader.LocalName)
-                {
-                    case AmountCase.XMLNAME:
-                        c = new AmountCase(reader);
-                        break;
-                    case DateCase.XMLNAME:
-                        c = new DateCase(reader);
-                        break;
-                    case DescriptionCase.XMLNAME:
-                        c = new DescriptionCase(reader);
-                        break;
-                    case FixDescriptionCase.XMLNAME:
-                        c = new FixDescriptionCase(reader);
-                        break;
-                    case GrayUnaccessibleCase.XMLNAME:
-                        c = new GrayUnaccessibleCase(reader);
-                        break;
-                    case OkayCase.XMLNAME:
-                        c = new OkayCase(reader);
-                        break;
-                    case ReadonlyAmountCase.XMLNAME:
-                        c = new ReadonlyAmountCase(reader);
-                        break;
-                }
-                if (c == null)
-                    throw new Exception("Parsing error. Are you sure the xml file is correct?");
-                Add(c);
-            }
+                reader.ReadStartElement(XmlTags.ListCases);
 
-            reader.ReadEndElement();
+                while (reader.NodeType != XmlNodeType.EndElement)
+                {
+                    AbstractCase c = null;
+                    switch (reader.LocalName)
+                    {
+                        case AmountCase.XMLNAME:
+                            c = new AmountCase(reader);
+                            break;
+                        case DateCase.XMLNAME:
+                            c = new DateCase(reader);
+                            break;
+                        case DescriptionCase.XMLNAME:
+                            c = new DescriptionCase(reader);
+                            break;
+                        case FixDescriptionCase.XMLNAME:
+                            c = new FixDescriptionCase(reader);
+                            break;
+                        case GrayUnaccessibleCase.XMLNAME:
+                            c = new GrayUnaccessibleCase(reader);
+                            break;
+                        case OkayCase.XMLNAME:
+                            c = new OkayCase(reader);
+                            break;
+                        case ReadonlyAmountCase.XMLNAME:
+                            c = new ReadonlyAmountCase(reader);
+                            break;
+                    }
+                    if (c == null)
+                        throw new Exception("Parsing error. Are you sure the xml file is correct?");
+                    Add(c);
+                }
+
+                reader.ReadEndElement();
+            }
+            catch (XmlException)
+            {
+                throw new XmlException("XmlException : You are not parsing an Xml file");
+            }
         }
 
         public void WriteXml(XmlWriter writer)
@@ -507,6 +531,24 @@ namespace D_Accounting
                 c.WriteXml(writer);
                 writer.WriteEndElement();
             }
+        }
+
+        public object Clone()
+        {
+            ListCases newCases = new ListCases();
+            newCases.ClearItems();
+
+            foreach (AbstractCase c in this)
+                newCases.Add(c.Clone() as AbstractCase);
+
+            return newCases;
+        }
+
+        internal void CopyContent(ListCases sourceList)
+        {
+            ClearItems();
+            foreach(AbstractCase c in sourceList)
+                Add(c.Clone());
         }
     }
 }

@@ -3,12 +3,26 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Xml;
 
 namespace D_Accounting
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Application settings
+        /// </summary>
+        public AppSettingsHandler Settings
+        {
+            get
+            {
+                return mSettings;
+            }
+        }
+        private AppSettingsHandler mSettings = new AppSettingsHandler();
+
         /// <summary>
         /// Close action of the main window
         /// </summary>
@@ -102,7 +116,7 @@ namespace D_Accounting
         }
         private string mSelectedAccount;
 
-        public FileInfo DataFilePath
+        /*public FileInfo DataFilePath
         {
             get
             {
@@ -116,7 +130,7 @@ namespace D_Accounting
         }
         private FileInfo mDataFilePath = new FileInfo(Path.Combine(
                                                         Directory.GetCurrentDirectory(),
-                                                        "d_accounting_data.xml"));
+                                                        "d_accounting_data.xml"));*/
 
         /// <summary>
         /// Default constructor of the main VM
@@ -125,7 +139,7 @@ namespace D_Accounting
         {
             try
             {
-                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(DataFilePath);
+                ListCasesXmlReaderParser readParser = new ListCasesXmlReaderParser(mSettings.DataFilePath);
                 mCases = readParser.Read();
             }
             catch (Exception)
@@ -141,14 +155,23 @@ namespace D_Accounting
         {
             get
             {
-                return mCloseCommand ?? (mCloseCommand = new CommandHandler(Close));
+                return new CommandHandler(Close);
             }
         }
-        private ICommand mCloseCommand;
 
         private void Close()
         {
-            // Ask if save...
+            // TODO : If something has been modified
+            MessageBox_Show(MessageBoxCloseAnswer, "Changes may have been made.\nDo you want to save the possible changes before exiting?", "Save?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+        }
+        private void MessageBoxCloseAnswer(MessageBoxResult result)
+        {
+            if (result == MessageBoxResult.Cancel)
+                return;
+
+            if (result == MessageBoxResult.Yes)
+                Save();
+
             CloseAction();
         }
         #endregion // Close command
@@ -182,7 +205,7 @@ namespace D_Accounting
 
         public void SaveAs(string fileName)
         {
-            DataFilePath = new FileInfo(fileName);
+            mSettings.DataFilePath = new FileInfo(fileName);
             Save();
         }
         #endregion
@@ -192,13 +215,20 @@ namespace D_Accounting
         {
             get
             {
-                return new CommandHandler(Save);
+                return new CommandHandler(Save); // TODO CanSave if no changes have been made
             }
         }
 
         private void Save()
         {
-            new ListCasesXmlWriterParser(DataFilePath).Write(mCases);
+            try
+            {
+                new ListCasesXmlWriterParser(mSettings.DataFilePath).Write(Cases);
+            }
+            catch (Exception)
+            {
+                MessageBox_Show(null, "Could not save file at " + mSettings.DataFilePath + ".", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+            }
         }
         #endregion // Save command
 
@@ -211,7 +241,7 @@ namespace D_Accounting
             }
         }
 
-        private bool CanExecuteAddAccount { get; set; }
+        private bool CanExecuteAddAccount;
 
         private void AddAccount()
         {
@@ -229,7 +259,7 @@ namespace D_Accounting
             }
         }
 
-        private bool CanExecuteRemoveAccount { get; set; }
+        private bool CanExecuteRemoveAccount;
 
         private void RemoveAccount()
         {
@@ -308,10 +338,19 @@ namespace D_Accounting
         #endregion // Commands
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(String propertyName)
+        private void OnPropertyChanged(String propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event EventHandler<ShowMessageBoxEventArgs> MessageBoxRequest;
+        protected void MessageBox_Show(Action<MessageBoxResult> resultAction, string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
+        {
+            if (this.MessageBoxRequest != null)
+            {
+                this.MessageBoxRequest(this, new ShowMessageBoxEventArgs(resultAction, messageBoxText, caption, button, icon, defaultResult, options));
+            }
         }
     }
 }

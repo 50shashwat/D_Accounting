@@ -1,4 +1,5 @@
-﻿using System;
+﻿using D_Accounting.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -167,6 +168,19 @@ namespace D_Accounting
         private void New()
         {
             DoCommand(new NewCommand(this, mCases));
+        }
+
+        /// <summary>
+        /// Might throw an exception if it cannot read the file.
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void Load(string filePath) // TODO should be a command
+        {
+            // Read file
+            ListCasesXmlReaderParser fileParser = new ListCasesXmlReaderParser(new FileInfo(filePath));
+            ListCases loadedFileData = fileParser.Read();
+
+            DoCommand(new LoadCommand(this, Cases, filePath, loadedFileData));
         }
         #endregion
 

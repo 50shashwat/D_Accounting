@@ -53,36 +53,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\LoadCommand.cs" />
     <Compile Include="ListCasesXmlReaderParser.cs" />
     <Compile Include="ListCasesXmlWriterParser.cs" />
-    <Compile Include="NewCommand.cs" />
+    <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="UndoRedoControl.cs" />
-    <Compile Include="WriteDataFilePathDialog.xaml.cs">
-      <DependentUpon>WriteDataFilePathDialog.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AddAccountCommand.cs" />
-    <Compile Include="AddOperationCommand.cs" />
+    <Compile Include="Commands\AddAccountCommand.cs" />
+    <Compile Include="Commands\AddOperationCommand.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CommandHandler.cs" />
-    <Compile Include="DeleteAccountCommand.cs" />
-    <Compile Include="D_Command.cs" />
+    <Compile Include="Commands\CommandHandler.cs" />
+    <Compile Include="Commands\DeleteAccountCommand.cs" />
+    <Compile Include="Commands\D_Command.cs" />
     <Compile Include="ListCases.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WriteDataFilePathDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

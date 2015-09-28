@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D_Accounting", "D_Accounting\D_Accounting.csproj", "{2DA18860-763B-4BA5-8EC7-988EF0747B09}"
 EndProject
@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{27F09660-3607-4FD2-9B0A-D97D9D516274}"
 	ProjectSection(SolutionItems) = preProject
 		README.txt = README.txt
-		TODO list.txt = TODO list.txt
 	EndProjectSection
 EndProject
 Global

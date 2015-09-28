@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -89,11 +90,16 @@ namespace D_Accounting
             UpdateLayout();
         }
 
-        private void Click_MenuItem_DialogForChoosingDataFilePath(object sender, RoutedEventArgs e)
+        private void Event_LoadFile(object sender, RoutedEventArgs e)
         {
-            WriteDataFilePathDialog dataFileDialog = new WriteDataFilePathDialog();
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Multiselect = false;
 
-            dataFileDialog.ShowDialog();
+            bool? isOkay = dlg.ShowDialog();
+            if (isOkay.GetValueOrDefault())
+            {
+                ViewModel.Load(dlg.FileName);
+            }
         }
     }
 }

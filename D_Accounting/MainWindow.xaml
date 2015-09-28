@@ -14,12 +14,12 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" Command="{Binding Source={StaticResource mMainViewModel}, Path=NewCommand}"/>
-                <MenuItem Header="_Load"/>
+                <MenuItem Header="_Load" Click="Event_LoadFile"/>
                 <MenuItem Header="_Save" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}"/>
-                <MenuItem Click="Click_MenuItem_DialogForChoosingDataFilePath">
+                <MenuItem>
                     <MenuItem.Header>
                         <StackPanel>
-                            <TextBlock Text="Modify save file"/>
+                            <TextBlock Text="Current active file"/>
                             <TextBlock Text="{Binding Source={StaticResource mMainViewModel}, Path=DataFilePath}"/>
                         </StackPanel>
                     </MenuItem.Header>

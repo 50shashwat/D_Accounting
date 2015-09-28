@@ -27,8 +27,6 @@ namespace D_Accounting
                                                         Directory.GetCurrentDirectory(),
                                                         "d_accounting_data.xml"));
 
-        
-
         public AppSettingsHandler()
         {
             // Read settings file

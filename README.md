@@ -6,11 +6,12 @@
 I made this software originally to check my accounts in real-time.
 When I pay or withdraw money with my debit card, it only shows up some days ago.
 This bothered me when I made a lot of payments in a row, so I wrote this software, which also made me practice my C# and MVVM-Pattern.
-This application is only useful if you input every banking transaction, otherwise it will not be up-to-date and pointless.
+This application is only useful if you input every banking transaction, otherwise it will not be up-to-date and so pointless.
 
 ### How it works & functionalities
 
-When opening the application, it will try to load a file called *d_accounting_data.xml*.
+When opening the application, it will try to load the settings file called *settings.xml*.
+This file contains the data file path, by default this file is called *d_accounting_data.xml* and located next to the executable.
 If it doesn't find this file, a new accounting sheet will be showed. Otherwhise, it will load the file if it's correct.
 This xml file must have the right structure, but the application should totally take care of this part.
 
@@ -19,7 +20,6 @@ This xml file must have the right structure, but the application should totally 
 You certainly own different accounts. Create them by typing their name into the text box at the top of the window.
 If the name is valid and an account with the same name doesn't exist, the *Add account* will be enabled and you can create the corresponding account.
 If the name is valid and already exists, the *Remove account* button will show up. Click and delete the account and all its linked operations.
-
 
 You cannot (yet) rename an existing account or move the column of an account.
 
@@ -48,6 +48,7 @@ These actions are undo- and redoable :
 On application launch, it will look for the *d_accounting_data.xml* file and load it.
 In the *File* menu bar, you can see the current file. If you press *Save*, it will save the file at this location and overwrite the older file if it exists.
 *Save As...* will allow you to change the current file path, just as *Load*, which will set the selected file as current file.
+The file path is stored in a settings file next to the executable (just like the default data file). This file is created on application launch if it doesn't exist, and is updated when the application is closed using the *Close* button.
 
 ### Technologies & implementation
 

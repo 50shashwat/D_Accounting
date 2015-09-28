@@ -21,7 +21,7 @@ namespace D_Accounting
                 return mSettings;
             }
         }
-        private AppSettingsHandler mSettings = new AppSettingsHandler();
+        private readonly AppSettingsHandler mSettings = new AppSettingsHandler();
 
         /// <summary>
         /// Close action of the main window
@@ -172,6 +172,7 @@ namespace D_Accounting
             if (result == MessageBoxResult.Yes)
                 Save();
 
+            mSettings.SaveSettings();
             CloseAction();
         }
         #endregion // Close command

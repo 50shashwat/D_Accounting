@@ -59,7 +59,6 @@
     <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="AppSettingsHandler.cs" />
     <Compile Include="DateTimeToStringConverter.cs" />
-    <Compile Include="FileInfoToStringConverter.cs" />
     <Compile Include="ShowMessageBoxEventArgs.cs" />
     <Compile Include="UndoRedoControl.cs" />
     <Page Include="MainWindow.xaml">

@@ -95,10 +95,28 @@ namespace D_Accounting
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Multiselect = false;
 
-            bool? isOkay = dlg.ShowDialog();
+            bool? isOkay = dlg.ShowDialog(this);
             if (isOkay.GetValueOrDefault())
             {
-                ViewModel.Load(dlg.FileName);
+                try
+                {
+                    ViewModel.Load(dlg.FileName);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(this, "Sorry, an error occured. We could not load your file. Try a valid xml file, created by this application.", "File loading error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void Event_SaveAs(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+
+            bool? isOkay = dlg.ShowDialog(this);
+            if (isOkay.GetValueOrDefault())
+            {
+                ViewModel.SaveAs(dlg.FileName);
             }
         }
     }

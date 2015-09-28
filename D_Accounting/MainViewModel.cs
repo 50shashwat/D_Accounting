@@ -156,7 +156,7 @@ namespace D_Accounting
         }
         #endregion // Close command
 
-        #region Menu bar commands
+        #region Menu bar commands (but not only)
         public ICommand NewCommand
         {
             get
@@ -181,6 +181,12 @@ namespace D_Accounting
             ListCases loadedFileData = fileParser.Read();
 
             DoCommand(new LoadCommand(this, Cases, filePath, loadedFileData));
+        }
+
+        public void SaveAs(string fileName)
+        {
+            DataFilePath = new FileInfo(fileName);
+            Save();
         }
         #endregion
 

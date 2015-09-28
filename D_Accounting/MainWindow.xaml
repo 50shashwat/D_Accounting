@@ -16,6 +16,7 @@
                 <MenuItem Header="_New" Command="{Binding Source={StaticResource mMainViewModel}, Path=NewCommand}"/>
                 <MenuItem Header="_Load" Click="Event_LoadFile"/>
                 <MenuItem Header="_Save" Command="{Binding Source={StaticResource mMainViewModel}, Path=SaveCommand}"/>
+                <MenuItem Header="_Save As..." Click="Event_SaveAs"/>
                 <MenuItem>
                     <MenuItem.Header>
                         <StackPanel>
